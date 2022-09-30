@@ -68,6 +68,7 @@ plt.plot(polydegree, bias, label='bias')
 plt.plot(polydegree, variance, label='Variance')
 plt.xticks(np.arange(1, 6, step=1))  # Set label locations.
 plt.xlabel('Model complexity')
+plt.ylabel('Mean squared error')
 plt.legend()
 plt.savefig("plots/OLS/OLS_bias_var_tradeoff.png",dpi=150)
 plt.show()

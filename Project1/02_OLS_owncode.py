@@ -8,7 +8,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
 #from sklearn.preprocessing import StandardScaler
-from Functions import FrankeFunction, R2, MSE, DesignMatrix, LinReg
+from Functions import FrankeFunction, R2, MSE, DesignMatrix, LinReg#, Beta_std
+
+# def Beta_std(var,X_train,Beta,p):
+#     Beta_var = var*np.linalg.pinv(X_train.T @ X_train)
+#     err = []
+#     for p_ in range(p):
+#         err = np.append(err,Beta_var[p_,p_] ** 0.5)
+#     return err
 
 #%%
 #OLS on the Franke function
@@ -21,7 +28,8 @@ x = np.random.uniform(0,1,n)
 y = np.random.uniform(0,1,n)
 z = FrankeFunction(x, y)
 # Add random distributed noise
-z = z + np.random.normal(0,0.1,z.shape)
+var = 0.1
+z = z + np.random.normal(0,var,z.shape)
 
 
 x = np.array(x).reshape(n,1)
@@ -68,16 +76,20 @@ TestR2 = np.zeros(maxdegree)
 TrainR2 = np.zeros(maxdegree)
 polydegree = np.zeros(maxdegree)
 predictor = []
+predictor_std = []
 
 
 for degree in range(maxdegree):
     X_train = DesignMatrix(x_train[:,0],x_train[:,1],degree+1)
     X_test = DesignMatrix(x_test[:,0],x_test[:,1],degree+1)
     z_fit, z_pred, betas = LinReg(X_train, X_test, z_train)
-    
     predictor=np.append(predictor,betas)
-    polydegree[degree] = degree+1
-    
+
+    #Accumulate standard deviation values for each Beta
+    Beta_err = Beta_std(var, X_train, betas, betas.shape[0])
+    predictor_std = np.append(predictor_std,Beta_err)
+
+    polydegree[degree] = degree+1    
     TestError[degree] = MSE(z_test, z_pred)
     TrainError[degree] = MSE(z_train, z_fit)
     TestR2[degree] = R2(z_test,z_pred)
@@ -95,7 +107,9 @@ for degree in range(maxdegree):
     print("MSE =",MSE(z_test,z_pred))
     print("R2  =",R2(z_test,z_pred))
 
-#Plots    
+#Plots 
+
+#MSE   
 plt.plot(polydegree, TestError, label='Test sample')
 plt.plot(polydegree, TrainError, label='Train sample')
 plt.xlabel('Model complexity (degree)')
@@ -105,6 +119,7 @@ plt.legend()
 plt.savefig("plots/OLS/MSE_vs_complexity.png", dpi=150)
 plt.show()
 
+#R2 score
 plt.plot(polydegree, TestR2, label='Test sample')
 plt.plot(polydegree, TrainR2, label='Train sample')
 plt.xlabel('Model complexity')
@@ -116,7 +131,7 @@ plt.show()
 
 #%%
 #Plot also the parameters 𝛽 as you increase the order of the polynomial.
-#Beta coefficients
+#Beta coefficients (up to 21)
 print(predictor.shape)
 
 #plt.plot(predictor[0:55])
@@ -143,4 +158,24 @@ plt.legend(loc='lower right',prop={'size': 8})
 plt.savefig("plots/OLS/OLS_Beta_Optimal_degree5.png",dpi=150)
 plt.show()
 
+#Beta coefficients with error bars for degree 1, 3 and 5 
+plt.errorbar(np.array(range(0,21)),predictor[34:55], yerr=predictor_std[34:55],uplims=True, lolims=True, fmt='o', markersize=4, capsize=1,label='degree=5')
+plt.errorbar(np.array(range(0,10)),predictor[9:19], yerr=predictor_std[9:19],uplims=True, lolims=True, fmt='o', markersize=4, capsize=1,label='degree=3')
+plt.errorbar(np.array(range(0,3)),predictor[0:3], yerr=predictor_std[0:3],uplims=True, lolims=True,fmt='o', markersize=4, capsize=1, label='degree=1')
 
+locs, labels = plt.xticks()  # Get the current locations and labels.
+plt.xticks(np.arange(0, 1, step=1))  # Set label locations.
+plt.xticks(np.arange(21), [r'$\beta_0$', r'$\beta_1$', r'$\beta_2$', \
+           r'$\beta_3$', r'$\beta_4$', r'$\beta_5$', \
+           r'$\beta_6$', r'$\beta_7$', r'$\beta_8$', \
+           r'$\beta_9$', r'$\beta_{10}$', r'$\beta_{11}$', \
+           r'$\beta_{12}$', r'$\beta_{13}$', r'$\beta_{14}$', \
+           r'$\beta_{15}$', r'$\beta_{16}$', r'$\beta_{17}$', \
+           r'$\beta_{18}$', r'$\beta_{19}$', r'$\beta_{20}$',r'$\beta_{21}$'\
+           ], rotation=45)  # Set text labels.
+
+
+plt.ylabel("Optimal Beta - predictor value")
+plt.legend()
+plt.show()
+plt.savefig("Results/OLS/OLS_Beta_Optimal_degree5_std.png",dpi=150)
