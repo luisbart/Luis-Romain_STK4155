@@ -8,14 +8,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
 #from sklearn.preprocessing import StandardScaler
-from Functions import FrankeFunction, R2, MSE, DesignMatrix, LinReg#, Beta_std
+from Functions import FrankeFunction, R2, MSE, DesignMatrix, LinReg, Beta_std
 
-# def Beta_std(var,X_train,Beta,p):
-#     Beta_var = var*np.linalg.pinv(X_train.T @ X_train)
-#     err = []
-#     for p_ in range(p):
-#         err = np.append(err,Beta_var[p_,p_] ** 0.5)
-#     return err
 
 #%%
 #OLS on the Franke function
