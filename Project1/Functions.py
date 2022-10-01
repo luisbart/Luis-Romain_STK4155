@@ -70,9 +70,3 @@ def LassoReg(X_train, X_test, y_train, y_test,lmb):
     ytildeTest = modelLasso.predict(X_test)
     return ytildeTrain, ytildeTest
 
-def Beta_std(var,X_train,Beta,p):
-    Beta_var = var*np.linalg.pinv(X_train.T @ X_train)
-    err = []
-    for p_ in range(p):
-        err = np.append(err,Beta_var[p_,p_] ** 0.5)
-    return err

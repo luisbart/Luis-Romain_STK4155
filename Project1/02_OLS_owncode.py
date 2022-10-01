@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
 #from sklearn.preprocessing import StandardScaler
-from Functions import FrankeFunction, R2, MSE, DesignMatrix, LinReg, Beta_std
+from Functions import FrankeFunction, R2, MSE, DesignMatrix, LinReg
 
 
 #%%
@@ -80,8 +80,6 @@ for degree in range(maxdegree):
     predictor=np.append(predictor,betas)
 
     #Accumulate standard deviation values for each Beta
-    Beta_err = Beta_std(var, X_train, betas, betas.shape[0])
-    predictor_std = np.append(predictor_std,Beta_err)
 
     polydegree[degree] = degree+1    
     TestError[degree] = MSE(z_test, z_pred)

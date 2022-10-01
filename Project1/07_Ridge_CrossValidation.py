@@ -36,8 +36,6 @@ var = 0.01
 noise = np.random.normal(0,var,n)
 
 y = FrankeFunction(x1,x2) + noise 
-#Add normally distributed noise
-#y = y + np.random.normal(0,0.1,y.shape)
 
 x1 = np.array(x1).reshape(n,1)
 x2 = np.array(x2).reshape(n,1)
@@ -90,7 +88,7 @@ for l in range(nlambdas):
 
 plt.xlabel('Model complexity')    
 plt.xticks(np.arange(1, len(polydegree)+1, step=1))  # Set label locations.
-plt.ylabel('log10(MSE)')
+plt.ylabel('MSE')
 plt.title('MSE Ridge regression for different lambdas (kfold=10)')
 
 # Add a legend
