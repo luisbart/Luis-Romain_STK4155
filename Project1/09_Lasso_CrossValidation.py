@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import KFold
 from Functions import LassoReg, MSE, DesignMatrix, FrankeFunction
+import seaborn as sb
 
 
 #%%
@@ -51,6 +52,7 @@ estimated_mse_Kfold = np.zeros(maxdegree)
 bias = np.zeros(maxdegree)
 variance = np.zeros(maxdegree)
 
+E = np.zeros((maxdegree,9))
 
 # Create a matplotlib figure
 fig, ax = plt.subplots()
@@ -78,13 +80,14 @@ for l in range(nlambdas):
         polydegree[degree] = degree+1
                 
         i+=1
-    
+
+    E[:,l] = estimated_mse_Kfold    
     ax.plot(polydegree, estimated_mse_Kfold, label='%.0e' %lambdas[l])
 
 plt.xlabel('Model complexity')    
 plt.xticks(np.arange(1, len(polydegree)+1, step=1))  # Set label locations.
 plt.ylabel('MSE')
-plt.title('MSE Lasso regression for different lambdas')
+plt.title('MSE Lasso regression for different lambdas (Kfold=10)')
 
 # Add a legend
 handles, labels = ax.get_legend_handles_labels()
@@ -92,4 +95,16 @@ ax.legend(handles[::-1], labels[::-1], title='lambda', loc='center right', bbox_
 
 #Save figure
 plt.savefig("plots/Ridge_Lasso/Lasso_CV_DifferentLambdas.png",dpi=150, bbox_inches='tight')
+plt.show()
+
+#%%
+#Create a heatmap with the error per nlambdas and polynomial degree
+
+heatmap = sb.heatmap(E,annot=True, annot_kws={"size":7}, cmap="coolwarm", xticklabels=lambdas, yticklabels=range(1,maxdegree+1), cbar_kws={'label': 'Mean squared error'})
+heatmap.invert_yaxis()
+heatmap.set_ylabel("Complexity")
+heatmap.set_xlabel("lambda")
+heatmap.set_title("MSE heatmap, Cross Validation, kfold = {:}".format(k))
+plt.tight_layout()
+plt.savefig("plots/Ridge_Lasso/Lasso_CV_heatmap.png",dpi=150)
 plt.show()
