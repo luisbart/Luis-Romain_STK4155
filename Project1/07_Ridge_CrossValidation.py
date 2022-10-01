@@ -94,6 +94,6 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles[::-1], labels[::-1], title='lambda', loc='center right', bbox_to_anchor=(1.27, 0.5))
 
 #Save figure
-plt.savefig("plots/Ridge_Lasso/Ridge_MSE_DifferentLambdas.png",dpi=150, bbox_inches='tight')
+#plt.savefig("plots/Ridge_Lasso/Ridge_MSE_DifferentLambdas.png",dpi=150, bbox_inches='tight')
 plt.show()
 

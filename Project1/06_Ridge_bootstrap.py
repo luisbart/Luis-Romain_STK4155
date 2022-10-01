@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.utils import resample
 from Functions import RidgeReg, DesignMatrix, FrankeFunction
+import seaborn as sb
 
 #%%
 #Define maximal model complexity
@@ -55,6 +56,8 @@ error = np.zeros(maxdegree)
 bias = np.zeros(maxdegree)
 variance = np.zeros(maxdegree)
 
+E = np.zeros((maxdegree,9))
+
 #Initialize bootstrap matrice
 z_pred = np.empty((z_test.shape[0],n_bootstraps))
 
@@ -78,6 +81,9 @@ for l in range(nlambdas):
         error[degree] = np.mean( np.mean((z_test - z_pred)**2, axis=1, keepdims=True) )
         bias[degree] = np.mean( (z_test - np.mean(z_pred, axis=1, keepdims=True))**2 )
         variance[degree] = np.mean( np.var(z_pred, axis=1, keepdims=True) )
+        
+    E[:,l] = error
+    
 
     plt.subplot(3,3,c)
     plt.plot(range(1,maxdegree+1), error, label = 'Error')
@@ -93,6 +99,17 @@ plt.legend()
 plt.savefig("plots/Ridge_Lasso/Ridge_Bias_Variance_trade_off_LAMBDAS.png",dpi=150)
 plt.show()
 
+#%%
+#Create a heatmap with the error per nlambdas and polynomial degree
+
+heatmap = sb.heatmap(E,annot=True, annot_kws={"size":7}, cmap="coolwarm", xticklabels=lambdas, yticklabels=range(1,maxdegree+1), cbar_kws={'label': 'Mean squared error'})
+heatmap.invert_yaxis()
+heatmap.set_ylabel("Complexity")
+heatmap.set_xlabel("lambda")
+heatmap.set_title("MSE heatmap, n_bootstraps =  {:}".format(n_bootstraps))
+plt.tight_layout()
+plt.savefig("plots/Ridge_Lasso/Ridge_bootstrap_heatmap.png",dpi=150)
+plt.show()
 
 
 
