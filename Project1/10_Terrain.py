@@ -70,9 +70,9 @@ ax.set_zlim(-0.10, 1.40)
 ax.zaxis.set_major_locator(LinearLocator(10))
 ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
 ax.set_zticks([0, 500, 1000, 1500])
-ax.axes.xaxis.set_ticklabels([])
-ax.axes.yaxis.set_ticklabels([])
-ax.axes.axis.set_ticklabels([])
+# ax.axes.xaxis.set_ticklabels([])
+# ax.axes.yaxis.set_ticklabels([])
+# ax.axes.zaxis.set_ticklabels([])
 # Add a color bar which maps values to colors.
 fig.colorbar(surf, shrink=0.5, aspect=5)
 #plt.savefig("plots/Terrain/Map_3D.png", dpi=150)
@@ -149,8 +149,8 @@ plt.xlabel('Complexity')
 plt.ylabel('mse')
 plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
 plt.legend()
-plt.title('K-fold Cross Validation, k = 5, OLS')
-#plt.savefig("plots/Terrain/CV_OLS.png",dpi=150)
+plt.title('K-fold Cross Validation, k = 10, OLS')
+plt.savefig("plots/Terrain/CV_OLS.png",dpi=150)
 plt.show()
 
 
@@ -167,11 +167,11 @@ ytilde1 = X1 @ OLSbeta1
 
 # Show the terrain
 plt.figure()
-plt.title('Terrain over Norway, OLS')
+plt.title('Terrain over Norway, OLS, pol=4')
 plt.imshow(ytilde1, cmap='viridis')
 plt.xlabel('X')
 plt.ylabel('Y')
-#plt.savefig("plots/Terrain/Map_v03_OLS_pol4.png",dpi=150)
+plt.savefig("plots/Terrain/Map_v03_OLS_pol4.png",dpi=150)
 plt.show()
 
 
@@ -215,12 +215,15 @@ lambdas = np.logspace(-1, 7, nlambdas)
 
 #Initialize before looping:
 polydegree = np.zeros(maxdegree)
-error_Kfold = np.zeros((maxdegree,k))
-estimated_mse_Kfold = np.zeros(maxdegree)
+error_Kfold_train = np.zeros((maxdegree,k))
+error_Kfold_test = np.zeros((maxdegree,k))
+estimated_mse_Kfold_train = np.zeros(maxdegree)
+estimated_mse_Kfold_test = np.zeros(maxdegree)
 bias = np.zeros(maxdegree)
 variance = np.zeros(maxdegree)
 
-E = np.zeros((maxdegree,9))
+Etest = np.zeros((maxdegree,9))
+Etrain = np.zeros((maxdegree,9))
 
 # Create a matplotlib figure
 fig, ax = plt.subplots()
@@ -240,17 +243,20 @@ for l in range(nlambdas):
                  
             z_fit, z_pred, Beta = RidgeReg(X_train, X_test, z_train, z_test,lambdas[l])
             
-            error_Kfold[i,j] = MSE(z_test,z_pred)
+            error_Kfold_test[i,j] = MSE(z_test,z_pred)
+            error_Kfold_train[i,j] = MSE(z_train,z_fit)
             
             j+=1
-            
-        estimated_mse_Kfold[degree] = np.mean(error_Kfold[i,:])
+        
+        estimated_mse_Kfold_test[degree] = np.mean(error_Kfold_test[i,:])
+        estimated_mse_Kfold_train[degree] = np.mean(error_Kfold_train[i,:])
         polydegree[degree] = degree+1
                 
         i+=1
     
-    E[:,l] = estimated_mse_Kfold
-    ax.plot(polydegree, estimated_mse_Kfold, label='%.0e' %lambdas[l])
+    Etest[:,l] = estimated_mse_Kfold_test
+    Etrain[:,l] = estimated_mse_Kfold_train
+    ax.plot(polydegree, estimated_mse_Kfold_test, label='%.0e' %lambdas[l])
 
 plt.xlabel('Model complexity')    
 plt.xticks(np.arange(1, len(polydegree)+1, step=1))  # Set label locations.
@@ -262,11 +268,23 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles[::-1], labels[::-1], title='lambda', loc='center right', bbox_to_anchor=(1.27, 0.5))
 
 #Save figure
-#plt.savefig("plots/Terrain/CV_Ridge.png",dpi=150, bbox_inches='tight')
+plt.savefig("plots/Terrain/CV_Ridge_lambda.png",dpi=150, bbox_inches='tight')
+plt.show()
+
+#Compare train and test performance
+plt.figure()
+plt.plot(polydegree, Etrain[:,2], label = 'KFold train')
+plt.plot(polydegree, Etest[:,2], label = 'KFold test')
+plt.xlabel('Complexity')
+plt.ylabel('mse')
+plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
+plt.legend()
+plt.title('K-fold Cross Validation, k =10, Ridge, lambda=10')
+plt.savefig("plots/Terrain/CV_Ridge.png",dpi=150)
 plt.show()
 
 #Create a heatmap with the error per nlambdas and polynomial degree
-heatmap = sb.heatmap(E,annot=True, annot_kws={"size":7}, cmap="coolwarm", xticklabels=lambdas, yticklabels=range(1,maxdegree+1), cbar_kws={'label': 'Mean squared error'})
+heatmap = sb.heatmap(Etest,annot=True, annot_kws={"size":7}, cmap="coolwarm", xticklabels=lambdas, yticklabels=range(1,maxdegree+1), cbar_kws={'label': 'Mean squared error'})
 heatmap.invert_yaxis()
 heatmap.set_ylabel("Complexity")
 heatmap.set_xlabel("lambda")
@@ -298,7 +316,7 @@ plt.title('Terrain over Norway, Ridge')
 plt.imshow(ytilde2, cmap='viridis')
 plt.xlabel('X')
 plt.ylabel('Y')
-plt.savefig("plots/Terrain/Map_v04_Ridge_pol5_lmb10.png",dpi=150)
+#plt.savefig("plots/Terrain/Map_v04_Ridge_pol5_lmb10.png",dpi=150)
 plt.show()
 
 
@@ -327,7 +345,7 @@ ax.axes.yaxis.set_ticklabels([])
 ax.axes.zaxis.set_ticklabels([])
 # Add a color bar which maps values to colors.
 fig.colorbar(surf, shrink=0.5, aspect=5)
-plt.savefig("plots/Terrain/Map_3d_Ridge_pol5_lmb10.png", dpi=150)
+#plt.savefig("plots/Terrain/Map_3d_Ridge_pol5_lmb10.png", dpi=150)
 plt.show()
 
 
@@ -342,12 +360,15 @@ lambdas = np.logspace(-6, 2, nlambdas)
 
 #Initialize before looping:
 polydegree = np.zeros(maxdegree)
-error_Kfold = np.zeros((maxdegree,k))
-estimated_mse_Kfold = np.zeros(maxdegree)
+error_Kfold_test = np.zeros((maxdegree,k))
+error_Kfold_train = np.zeros((maxdegree,k))
+estimated_mse_Kfold_train = np.zeros(maxdegree)
+estimated_mse_Kfold_test = np.zeros(maxdegree)
 bias = np.zeros(maxdegree)
 variance = np.zeros(maxdegree)
 
-E = np.zeros((maxdegree,9))
+Etrain = np.zeros((maxdegree,9))
+Etest = np.zeros((maxdegree,9))
 
 # Create a matplotlib figure
 fig, ax = plt.subplots()
@@ -367,17 +388,20 @@ for l in range(nlambdas):
             
             z_fit, z_pred = LassoReg(X_train, X_test, z_train, z_test,lambdas[l])
             
-            error_Kfold[i,j] = MSE(z_test,z_pred)
+            error_Kfold_test[i,j] = MSE(z_test,z_pred)
+            error_Kfold_train[i,j] = MSE(z_train,z_fit)
             
             j+=1
             
-        estimated_mse_Kfold[degree] = np.mean(error_Kfold[i,:])
+        estimated_mse_Kfold_test[degree] = np.mean(error_Kfold_test[i,:])
+        estimated_mse_Kfold_train[degree] = np.mean(error_Kfold_train[i,:])
         polydegree[degree] = degree+1
                 
         i+=1
 
-    E[:,l] = estimated_mse_Kfold    
-    ax.plot(polydegree, estimated_mse_Kfold, label='%.0e' %lambdas[l])
+    Etest[:,l] = estimated_mse_Kfold_test
+    Etrain[:,l] = estimated_mse_Kfold_train
+    ax.plot(polydegree, estimated_mse_Kfold_test, label='%.0e' %lambdas[l])
 
 plt.xlabel('Model complexity')    
 plt.xticks(np.arange(1, len(polydegree)+1, step=1))  # Set label locations.
@@ -389,13 +413,25 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles[::-1], labels[::-1], title='lambda', loc='center right', bbox_to_anchor=(1.27, 0.5))
 
 #Save figure
-plt.savefig("plots/Terrain/CV_Lasso.png",dpi=150, bbox_inches='tight')
+plt.savefig("plots/Terrain/CV_Lasso_lambda.png",dpi=150, bbox_inches='tight')
+plt.show()
+
+#Compare train and test performance
+plt.figure()
+plt.plot(polydegree, Etrain[:,5], label = 'KFold train')
+plt.plot(polydegree, Etest[:,5], label = 'KFold test')
+plt.xlabel('Complexity')
+plt.ylabel('mse')
+plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
+plt.legend()
+plt.title('K-fold Cross Validation, k = 4, Lasso, lambda=0.1')
+plt.savefig("plots/Terrain/CV_Ridge.png",dpi=150)
 plt.show()
 
 #%%
 #Create a heatmap with the error per nlambdas and polynomial degree
 
-heatmap = sb.heatmap(E,annot=True, annot_kws={"size":7}, cmap="coolwarm", xticklabels=lambdas, yticklabels=range(1,maxdegree+1), cbar_kws={'label': 'Mean squared error'})
+heatmap = sb.heatmap(Etest,annot=True, annot_kws={"size":7}, cmap="coolwarm", xticklabels=lambdas, yticklabels=range(1,maxdegree+1), cbar_kws={'label': 'Mean squared error'})
 heatmap.invert_yaxis()
 heatmap.set_ylabel("Complexity")
 heatmap.set_xlabel("lambda")
