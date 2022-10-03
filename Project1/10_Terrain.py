@@ -1,15 +1,11 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Oct  1 20:54:30 2022
-
-@author: luis.barreiro
-"""
+'''This program performs Ordinary least square, Ridge and Lasso regression on a terrain dataset
+and cross-validation as resampling technique to evaluate which model fits the data best.
+Author: R Corseri & L Barreiro'''
 
 #%%
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import KFold
-#from sklearn.preprocessing import StandardScaler
 from Functions import MSE, DesignMatrix, LinReg, RidgeReg, LassoReg
 from imageio import imread
 from matplotlib import cm
@@ -29,7 +25,7 @@ plt.title('Terrain over Norway')
 plt.imshow(terrain, cmap='viridis')
 plt.xlabel('X')
 plt.ylabel('Y')
-plt.savefig("plots/Terrain/Map_v01.png",dpi=150)
+#plt.savefig("plots/Terrain/Map_v01.png",dpi=150)
 plt.show()
 #%%
 n = 1000
@@ -51,7 +47,7 @@ plt.title('Terrain over Norway')
 plt.imshow(terrain, cmap='viridis')
 plt.xlabel('X')
 plt.ylabel('Y')
-plt.savefig("plots/Terrain/Map_v02.png",dpi=150)
+#plt.savefig("plots/Terrain/Map_v02.png",dpi=150)
 plt.show()
 
 #%%
@@ -79,7 +75,7 @@ ax.axes.yaxis.set_ticklabels([])
 ax.axes.axis.set_ticklabels([])
 # Add a color bar which maps values to colors.
 fig.colorbar(surf, shrink=0.5, aspect=5)
-plt.savefig("plots/Terrain/Map_3D.png", dpi=150)
+#plt.savefig("plots/Terrain/Map_3D.png", dpi=150)
 plt.show()
 
 #%% Cross validation in OLS
@@ -151,7 +147,7 @@ plt.plot(polydegree, estimated_mse_KFold_train, label = 'KFold train')
 plt.plot(polydegree, estimated_mse_KFold_test, label = 'KFold test')
 plt.xlabel('Complexity')
 plt.ylabel('mse')
-plt.xticks(np.arange(1, 6, step=1))  # Set label locations.
+plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
 plt.legend()
 plt.title('K-fold Cross Validation, k = 5, OLS')
 #plt.savefig("plots/Terrain/CV_OLS.png",dpi=150)
@@ -160,7 +156,7 @@ plt.show()
 
 
 #%% Make some more OLS plots
-#For complexity=5
+#For complexity=4
 x = np.linspace(0,1, np.shape(terrain)[0])
 y = np.linspace(0,1, np.shape(terrain)[1])
 z=terrain
@@ -175,7 +171,7 @@ plt.title('Terrain over Norway, OLS')
 plt.imshow(ytilde1, cmap='viridis')
 plt.xlabel('X')
 plt.ylabel('Y')
-plt.savefig("plots/Terrain/Map_v03_OLS_pol4.png",dpi=150)
+#plt.savefig("plots/Terrain/Map_v03_OLS_pol4.png",dpi=150)
 plt.show()
 
 
@@ -204,7 +200,7 @@ ax.axes.yaxis.set_ticklabels([])
 ax.axes.zaxis.set_ticklabels([])
 # Add a color bar which maps values to colors.
 fig.colorbar(surf, shrink=0.5, aspect=5)
-plt.savefig("plots/Terrain/Map_3d_OLS_pol4.png", dpi=150)
+#plt.savefig("plots/Terrain/Map_3d_OLS_pol4.png", dpi=150)
 plt.show()
 
 #%%
@@ -266,7 +262,7 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles[::-1], labels[::-1], title='lambda', loc='center right', bbox_to_anchor=(1.27, 0.5))
 
 #Save figure
-plt.savefig("plots/Terrain/CV_Ridge.png",dpi=150, bbox_inches='tight')
+#plt.savefig("plots/Terrain/CV_Ridge.png",dpi=150, bbox_inches='tight')
 plt.show()
 
 #Create a heatmap with the error per nlambdas and polynomial degree
@@ -276,7 +272,7 @@ heatmap.set_ylabel("Complexity")
 heatmap.set_xlabel("lambda")
 heatmap.set_title("MSE heatmap, Cross Validation, kfold = {:}".format(k))
 plt.tight_layout()
-plt.savefig("plots/Terrain/CV_Ridge_heatmap.png",dpi=150)
+#plt.savefig("plots/Terrain/CV_Ridge_heatmap.png",dpi=150)
 plt.show()
 
 #%%
