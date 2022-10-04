@@ -150,7 +150,7 @@ plt.ylabel('mse')
 plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
 plt.legend()
 plt.title('K-fold Cross Validation, k = 10, OLS')
-plt.savefig("plots/Terrain/CV_OLS.png",dpi=150)
+#plt.savefig("plots/Terrain/CV_OLS.png",dpi=150)
 plt.show()
 
 
@@ -161,7 +161,7 @@ x = np.linspace(0,1, np.shape(terrain)[0])
 y = np.linspace(0,1, np.shape(terrain)[1])
 z=terrain
 
-X1 = DesignMatrix(x,y,4)
+X1 = DesignMatrix(x,y,3)
 OLSbeta1 = np.linalg.pinv(X1.T @ X1) @ X1.T @ z
 ytilde1 = X1 @ OLSbeta1
 
@@ -171,7 +171,7 @@ plt.title('Terrain over Norway, OLS, pol=4')
 plt.imshow(ytilde1, cmap='viridis')
 plt.xlabel('X')
 plt.ylabel('Y')
-plt.savefig("plots/Terrain/Map_v03_OLS_pol4.png",dpi=150)
+plt.savefig("plots/Terrain/Map_v03_OLS_pol3.png",dpi=150)
 plt.show()
 
 
@@ -200,7 +200,7 @@ ax.axes.yaxis.set_ticklabels([])
 ax.axes.zaxis.set_ticklabels([])
 # Add a color bar which maps values to colors.
 fig.colorbar(surf, shrink=0.5, aspect=5)
-#plt.savefig("plots/Terrain/Map_3d_OLS_pol4.png", dpi=150)
+plt.savefig("plots/Terrain/Map_3d_OLS_pol3.png", dpi=150)
 plt.show()
 
 #%%
@@ -290,7 +290,7 @@ heatmap.set_ylabel("Complexity")
 heatmap.set_xlabel("lambda")
 heatmap.set_title("MSE heatmap, Cross Validation, kfold = {:}".format(k))
 plt.tight_layout()
-#plt.savefig("plots/Terrain/CV_Ridge_heatmap.png",dpi=150)
+plt.savefig("plots/Terrain/CV_Ridge_heatmap.png",dpi=150)
 plt.show()
 
 #%%
@@ -301,7 +301,7 @@ y = np.linspace(0,1, np.shape(terrain)[1])
 z=terrain
 
 
-deg=5
+deg=3
 lmb=10
 
 X1 = DesignMatrix(x,y,deg)
@@ -316,7 +316,7 @@ plt.title('Terrain over Norway, Ridge')
 plt.imshow(ytilde2, cmap='viridis')
 plt.xlabel('X')
 plt.ylabel('Y')
-#plt.savefig("plots/Terrain/Map_v04_Ridge_pol5_lmb10.png",dpi=150)
+plt.savefig("plots/Terrain/Map_v04_Ridge_pol4_lmb10.png",dpi=150)
 plt.show()
 
 
@@ -345,9 +345,20 @@ ax.axes.yaxis.set_ticklabels([])
 ax.axes.zaxis.set_ticklabels([])
 # Add a color bar which maps values to colors.
 fig.colorbar(surf, shrink=0.5, aspect=5)
-#plt.savefig("plots/Terrain/Map_3d_Ridge_pol5_lmb10.png", dpi=150)
+#plt.savefig("plots/Terrain/Map_3d_Ridge_pol4_lmb10.png", dpi=150)
 plt.show()
 
+#Compare train and test performance
+plt.figure()
+plt.plot(polydegree, Etrain[:,2], label = 'KFold train')
+plt.plot(polydegree, Etest[:,2], label = 'KFold test')
+plt.xlabel('Complexity')
+plt.ylabel('mse')
+plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
+plt.legend()
+plt.title('K-fold Cross Validation, k = 10, Ridge, lambda=10')
+plt.savefig("plots/Terrain/CV_Ridge.png",dpi=150)
+plt.show()
 
 
 
@@ -413,7 +424,7 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles[::-1], labels[::-1], title='lambda', loc='center right', bbox_to_anchor=(1.27, 0.5))
 
 #Save figure
-plt.savefig("plots/Terrain/CV_Lasso_lambda.png",dpi=150, bbox_inches='tight')
+#plt.savefig("plots/Terrain/CV_Lasso_lambda.png",dpi=150, bbox_inches='tight')
 plt.show()
 
 #Compare train and test performance
@@ -424,7 +435,7 @@ plt.xlabel('Complexity')
 plt.ylabel('mse')
 plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
 plt.legend()
-plt.title('K-fold Cross Validation, k = 4, Lasso, lambda=0.1')
+plt.title('K-fold Cross Validation, k = 10, Lasso, lambda=0.1')
 plt.savefig("plots/Terrain/CV_Ridge.png",dpi=150)
 plt.show()
 
