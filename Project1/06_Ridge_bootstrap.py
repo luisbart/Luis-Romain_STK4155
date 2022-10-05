@@ -17,7 +17,7 @@ maxdegree= 5
 
 #For Ridge regression, set up the hyper-parameters to investigate
 nlambdas = 9
-lambdas = np.logspace(-4, 4, nlambdas)
+lambdas = np.logspace(-7, 1, nlambdas)
 
 #Number of bootstraps
 n_bootstraps = 75

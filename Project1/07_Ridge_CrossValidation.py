@@ -23,7 +23,7 @@ kfold = KFold(n_splits = k)
 
 #For Ridge regression, set up the hyper-parameters to investigate
 nlambdas = 9
-lambdas = np.logspace(-4, 4, nlambdas)
+lambdas = np.logspace(-7, 1, nlambdas)
 
 
 # Generate dataset with n observations

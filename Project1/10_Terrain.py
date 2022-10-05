@@ -70,12 +70,13 @@ ax.set_zlim(-0.10, 1.40)
 ax.zaxis.set_major_locator(LinearLocator(10))
 ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
 ax.set_zticks([0, 500, 1000, 1500])
-# ax.axes.xaxis.set_ticklabels([])
-# ax.axes.yaxis.set_ticklabels([])
-# ax.axes.zaxis.set_ticklabels([])
+ax.axes.xaxis.set_ticklabels([])
+ax.axes.yaxis.set_ticklabels([])
+ax.axes.zaxis.set_ticklabels([])
+plt.title('Original terrain')
 # Add a color bar which maps values to colors.
 fig.colorbar(surf, shrink=0.5, aspect=5)
-#plt.savefig("plots/Terrain/Map_3D.png", dpi=150)
+plt.savefig("plots/Terrain/Map_3D.png", dpi=150)
 plt.show()
 
 #%% Cross validation in OLS
@@ -88,11 +89,11 @@ y = y.reshape(n,1)
 
 scaler = StandardScaler()
 
-scaler.fit(x)
-x_scaled = scaler.transform(x)
+# scaler.fit(x)
+# x_scaled = scaler.transform(x)
 
-scaler.fit(y)
-y_scaled = scaler.transform(y)
+# scaler.fit(y)
+# y_scaled = scaler.transform(y)
 
 z=terrain
 scaler.fit(z)
@@ -121,7 +122,7 @@ polydegree = np.zeros(maxdegree)
 i = 0
 for degree in range(maxdegree):
     polydegree[degree] = degree+1
-    X = DesignMatrix(x_scaled,y_scaled,degree+1)
+    X = DesignMatrix(x,y,degree+1)
     j = 0
     for train_inds, test_inds in kfold.split(x):
         X_train = X[train_inds]
@@ -150,7 +151,7 @@ plt.ylabel('mse')
 plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
 plt.legend()
 plt.title('K-fold Cross Validation, k = 10, OLS')
-#plt.savefig("plots/Terrain/CV_OLS.png",dpi=150)
+plt.savefig("plots/Terrain/CV_OLS.png",dpi=150)
 plt.show()
 
 
@@ -161,7 +162,8 @@ x = np.linspace(0,1, np.shape(terrain)[0])
 y = np.linspace(0,1, np.shape(terrain)[1])
 z=terrain
 
-X1 = DesignMatrix(x,y,3)
+deg=3
+X1 = DesignMatrix(x,y,deg)
 OLSbeta1 = np.linalg.pinv(X1.T @ X1) @ X1.T @ z
 ytilde1 = X1 @ OLSbeta1
 
@@ -208,7 +210,7 @@ plt.show()
 
 #set up the hyper-parameters to investigate
 nlambdas = 9
-lambdas = np.logspace(-1, 7, nlambdas)
+lambdas = np.logspace(-4, 4, nlambdas)
 
 
 # Plot all in the same figure as subplots
@@ -234,7 +236,7 @@ for l in range(nlambdas):
         j=0
         for train_inds, test_inds in kfold.split(x):
             
-            X = DesignMatrix(x_scaled,y_scaled,degree+1)
+            X = DesignMatrix(x,y,degree+1)
             
             X_train = X[train_inds]
             z_train = z_scaled[train_inds]   
@@ -268,7 +270,7 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles[::-1], labels[::-1], title='lambda', loc='center right', bbox_to_anchor=(1.27, 0.5))
 
 #Save figure
-plt.savefig("plots/Terrain/CV_Ridge_lambda.png",dpi=150, bbox_inches='tight')
+#plt.savefig("plots/Terrain/CV_Ridge_lambda.png",dpi=150, bbox_inches='tight')
 plt.show()
 
 #Compare train and test performance
@@ -301,7 +303,7 @@ y = np.linspace(0,1, np.shape(terrain)[1])
 z=terrain
 
 
-deg=3
+deg=5
 lmb=10
 
 X1 = DesignMatrix(x,y,deg)
@@ -316,7 +318,7 @@ plt.title('Terrain over Norway, Ridge')
 plt.imshow(ytilde2, cmap='viridis')
 plt.xlabel('X')
 plt.ylabel('Y')
-plt.savefig("plots/Terrain/Map_v04_Ridge_pol4_lmb10.png",dpi=150)
+plt.savefig("plots/Terrain/Map_v04_Ridge_pol5_lmb10.png",dpi=150)
 plt.show()
 
 
@@ -343,9 +345,10 @@ ax.set_zticks([0, 500,1000,1500])
 ax.axes.xaxis.set_ticklabels([])
 ax.axes.yaxis.set_ticklabels([])
 ax.axes.zaxis.set_ticklabels([])
+plt.title('Ridge, pol=4, lmb=10')
 # Add a color bar which maps values to colors.
 fig.colorbar(surf, shrink=0.5, aspect=5)
-#plt.savefig("plots/Terrain/Map_3d_Ridge_pol4_lmb10.png", dpi=150)
+plt.savefig("plots/Terrain/Map_3d_Ridge_pol4_lmb10.png", dpi=150)
 plt.show()
 
 #Compare train and test performance
@@ -390,7 +393,7 @@ for l in range(nlambdas):
         j=0
         for train_inds, test_inds in kfold.split(x):
             
-            X = DesignMatrix(x_scaled,y_scaled,degree+1)
+            X = DesignMatrix(x,y,degree+1)
             
             X_train = X[train_inds]
             z_train = z_scaled[train_inds]   
@@ -424,18 +427,18 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles[::-1], labels[::-1], title='lambda', loc='center right', bbox_to_anchor=(1.27, 0.5))
 
 #Save figure
-#plt.savefig("plots/Terrain/CV_Lasso_lambda.png",dpi=150, bbox_inches='tight')
+plt.savefig("plots/Terrain/CV_Lasso_lambda.png",dpi=150, bbox_inches='tight')
 plt.show()
 
 #Compare train and test performance
 plt.figure()
-plt.plot(polydegree, Etrain[:,5], label = 'KFold train')
-plt.plot(polydegree, Etest[:,5], label = 'KFold test')
+plt.plot(polydegree, Etrain[:,4], label = 'KFold train')
+plt.plot(polydegree, Etest[:,4], label = 'KFold test')
 plt.xlabel('Complexity')
 plt.ylabel('mse')
 plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
 plt.legend()
-plt.title('K-fold Cross Validation, k = 10, Lasso, lambda=0.1')
+plt.title('K-fold Cross Validation, k = 10, Lasso, lambda=0.01')
 plt.savefig("plots/Terrain/CV_Ridge.png",dpi=150)
 plt.show()
 
@@ -460,7 +463,7 @@ z=terrain
 
 
 deg=4
-lmb=0.1
+lmb=0.01
 
 X1 = DesignMatrix(x,y,deg)
 modelLasso = Lasso(lmb,fit_intercept=False)
@@ -473,7 +476,7 @@ plt.title('Terrain over Norway, Lasso')
 plt.imshow(ytilde3, cmap='viridis')
 plt.xlabel('X')
 plt.ylabel('Y')
-plt.savefig("plots/Terrain/Map_v05_Lasso_pol4_lmb0_1.png",dpi=150)
+plt.savefig("plots/Terrain/Map_v05_Lasso_pol4_lmb0_01.png",dpi=150)
 plt.show()
 
 
@@ -502,5 +505,5 @@ ax.axes.yaxis.set_ticklabels([])
 ax.axes.zaxis.set_ticklabels([])
 # Add a color bar which maps values to colors.
 fig.colorbar(surf, shrink=0.5, aspect=5)
-plt.savefig("plots/Terrain/Map_3d_Lasso_pol4_lmb0_1.png", dpi=150)
+plt.savefig("plots/Terrain/Map_3d_Lasso_pol4_lmb0_01.png", dpi=150)
 plt.show()
