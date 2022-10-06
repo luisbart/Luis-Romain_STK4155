@@ -226,7 +226,7 @@ plt.title('Terrain over Norway, OLS, pol=4')
 plt.imshow(ytilde1, cmap='viridis')
 plt.xlabel('X')
 plt.ylabel('Y')
-#plt.savefig("plots/Terrain/Map_v03_OLS_pol3.png",dpi=150)
+plt.savefig("plots/Terrain/Map_v03_OLS_pol3.png",dpi=150)
 plt.show()
 
 
@@ -256,7 +256,7 @@ ax.axes.zaxis.set_ticklabels([])
 plt.title('OLS, pol=3')
 # Add a color bar which maps values to colors.
 fig.colorbar(surf, shrink=0.5, aspect=5)
-plt.savefig("plots/Terrain/Map_3d_OLS_pol3.png", dpi=150)
+#plt.savefig("plots/Terrain/Map_3d_OLS_pol3.png", dpi=150)
 plt.show()
 
 #%%
