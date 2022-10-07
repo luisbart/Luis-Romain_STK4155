@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
 #from sklearn.preprocessing import StandardScaler
-from Functions import FrankeFunction, R2, MSE, DesignMatrix, LinReg
+from Functions import Beta_std, FrankeFunction, R2, MSE, DesignMatrix, LinReg
 
 
 #%%
@@ -80,6 +80,8 @@ for degree in range(maxdegree):
     predictor=np.append(predictor,betas)
 
     #Accumulate standard deviation values for each Beta
+    Beta_err = Beta_std(var, X_train, betas, betas.shape[0])
+    predictor_std = np.append(predictor_std,Beta_err)
 
     polydegree[degree] = degree+1    
     TestError[degree] = MSE(z_test, z_pred)
@@ -147,8 +149,10 @@ plt.xticks(np.arange(21), [r'$\beta_0$', r'$\beta_1$', r'$\beta_2$', \
 
 plt.ylabel("Optimal Beta - predictor value")
 plt.legend(loc='lower right',prop={'size': 8})
-plt.savefig("plots/OLS/OLS_Beta_Optimal_degree5.png",dpi=150)
 plt.show()
+plt.savefig("plots/OLS/OLS_Beta_Optimal_degree5.png",dpi=150)
+
+print(predictor[34:55])
 
 #Beta coefficients with error bars for degree 1, 3 and 5 
 plt.errorbar(np.array(range(0,21)),predictor[34:55], yerr=predictor_std[34:55],uplims=True, lolims=True, fmt='o', markersize=4, capsize=1,label='degree=5')
@@ -170,4 +174,4 @@ plt.xticks(np.arange(21), [r'$\beta_0$', r'$\beta_1$', r'$\beta_2$', \
 plt.ylabel("Optimal Beta - predictor value")
 plt.legend()
 plt.show()
-plt.savefig("Results/OLS/OLS_Beta_Optimal_degree5_std.png",dpi=150)
+plt.savefig("plots/OLS/OLS_Beta_Optimal_degree5_std.png",dpi=150)

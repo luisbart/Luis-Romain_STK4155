@@ -25,7 +25,8 @@ plt.title('Terrain over Norway')
 plt.imshow(terrain, cmap='viridis')
 plt.xlabel('X')
 plt.ylabel('Y')
-#plt.savefig("plots/Terrain/Map_v01.png",dpi=150)
+plt.colorbar()
+plt.savefig("plots/Terrain/Map_v01.png",dpi=150)
 plt.show()
 #%%
 n = 1000
@@ -47,7 +48,8 @@ plt.title('Terrain over Norway')
 plt.imshow(terrain, cmap='viridis')
 plt.xlabel('X')
 plt.ylabel('Y')
-#plt.savefig("plots/Terrain/Map_v02.png",dpi=150)
+plt.colorbar()
+plt.savefig("plots/Terrain/Map_v02.png",dpi=150)
 plt.show()
 
 #%%

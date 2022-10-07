@@ -64,9 +64,16 @@ def RidgeReg(X_train, X_test, y_train, y_test,lmb):
     return ytildeTrain, ytildeTest, Ridgebeta
 
 def LassoReg(X_train, X_test, y_train, y_test,lmb):
-    modelLasso = Lasso(lmb,fit_intercept=True)
+    modelLasso = Lasso(lmb,fit_intercept=False)
     modelLasso.fit(X_train,y_train)
     ytildeTrain = modelLasso.predict(X_train)
     ytildeTest = modelLasso.predict(X_test)
     return ytildeTrain, ytildeTest
+
+def Beta_std(var,X_train,Beta,p):
+    Beta_var = var*np.linalg.pinv(X_train.T @ X_train)
+    err = []
+    for p_ in range(p):
+        err = np.append(err,Beta_var[p_,p_] ** 0.5)
+    return err
 
