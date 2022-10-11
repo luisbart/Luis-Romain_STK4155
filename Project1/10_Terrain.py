@@ -6,17 +6,15 @@ Author: R Corseri & L Barreiro'''
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import KFold
-from Functions import MSE, DesignMatrix, LinReg, RidgeReg, LassoReg
+from Functions import MSE, DesignMatrix, RidgeReg, LassoReg, Plot3D, TerrainOLS_CV
 from imageio import imread
-from matplotlib import cm
-from sklearn.preprocessing import StandardScaler, PolynomialFeatures
+from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import Lasso
 import seaborn as sb
-from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
 
 #%%
-# Load the terrain
+# Load the terrain and show map
 terrain = imread('data/SRTM_data_Norway_1.tif')
 
 # Show the terrain
@@ -26,9 +24,9 @@ plt.imshow(terrain, cmap='viridis')
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.colorbar()
-plt.savefig("plots/Terrain/Map_v01.png",dpi=150)
+#plt.savefig("plots/Terrain/Map_v01.png",dpi=150)
 plt.show()
-#%%
+#%% Show selected area
 n = 1000
 maxdegree = 5 # polynomial order
 terrain = terrain[:n,:n]
@@ -49,228 +47,67 @@ plt.imshow(terrain, cmap='viridis')
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.colorbar()
-plt.savefig("plots/Terrain/Map_v02.png",dpi=150)
+#plt.savefig("plots/Terrain/Map_v02.png",dpi=150)
 plt.show()
 
-#%%
-#Plot 3D
-x = np.linspace(0,1, np.shape(terrain)[0])
-y = np.linspace(0,1, np.shape(terrain)[1])
-z=terrain
 
-fig = plt.figure()
-ax = fig.gca(projection='3d')
-
-x, y = np.meshgrid(x,y)
-#z=np.reshape(terrain,x)
-
-# Plot the surface without noise
-surf = ax.plot_surface(x, y, z, cmap=cm.coolwarm,
-                       linewidth=0, antialiased=False)
-# Customize the z axis.
-ax.set_zlim(-0.10, 1.40)
-ax.zaxis.set_major_locator(LinearLocator(10))
-ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
-ax.set_zticks([0, 500, 1000, 1500])
-ax.axes.xaxis.set_ticklabels([])
-ax.axes.yaxis.set_ticklabels([])
-ax.axes.zaxis.set_ticklabels([])
+#Plot 3D Original 
+Plot3D(x,y,terrain)    
 plt.title('Original terrain')
-# Add a color bar which maps values to colors.
-fig.colorbar(surf, shrink=0.5, aspect=5)
 #plt.savefig("plots/Terrain/Map_3D.png", dpi=150)
 plt.show()
 
-#%% Cross validation in OLS
+#%% Cross validation in OLS up to degree 5
 
 #Scale the data
-x = np.linspace(0,1, np.shape(terrain)[0])
-y = np.linspace(0,1, np.shape(terrain)[1])
-x = x.reshape(n,1)
-y = y.reshape(n,1)
+x1 = x.reshape(n,1)
+y1 = y.reshape(n,1)
 
 scaler = StandardScaler()
 
-# scaler.fit(x)
-# x_scaled = scaler.transform(x)
-
-# scaler.fit(y)
-# y_scaled = scaler.transform(y)
-
-z=terrain
-scaler.fit(z)
-z_scaled = scaler.transform(z)
-
-
-
-MSE_test = np.zeros(maxdegree)
-MSE_train = np.zeros(maxdegree)
-k=10
-
-# Decide degree on polynomial to fit
-poly = PolynomialFeatures(degree = 6)
+scaler.fit(terrain)
+z_scaled = scaler.transform(terrain)
 
 # Initialize a KFold instance
-k = 10
+k=10
 kfold = KFold(n_splits = k)
 
-# Perform the cross-validation to estimate MSE
-scores_KFold_Train = np.zeros((maxdegree, k))
-scores_KFold_Test = np.zeros((maxdegree, k))
-
-#
-polydegree = np.zeros(maxdegree)
-
-i = 0
-for degree in range(maxdegree):
-    polydegree[degree] = degree+1
-    X = DesignMatrix(x,y,degree+1)
-    j = 0
-    for train_inds, test_inds in kfold.split(x):
-        X_train = X[train_inds]
-        z_train = z_scaled[train_inds]
-
-        X_test = X[test_inds]
-        z_test = z_scaled[test_inds]
-  
-        z_fit, z_pred, beta = LinReg(X_train, X_test, z_train)
-
-        scores_KFold_Train[i,j] = MSE(z_train, z_fit)
-        scores_KFold_Test[i,j] = MSE(z_test, z_pred)
-
-        j += 1
-    i += 1
-    
-estimated_mse_KFold_train = np.mean(scores_KFold_Train, axis = 1)
-estimated_mse_KFold_test = np.mean(scores_KFold_Test, axis = 1)
-
-plt.figure()
-plt.plot(polydegree, estimated_mse_KFold_train, label = 'KFold train')
-plt.plot(polydegree, estimated_mse_KFold_test, label = 'KFold test')
-plt.xlabel('Complexity')
-plt.ylabel('mse')
-plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
-plt.legend()
+   
+       
+TerrainOLS_CV(maxdegree,k, kfold, x1, y1, z_scaled)
 plt.title('K-fold Cross Validation, k = 10, OLS')
 #plt.savefig("plots/Terrain/CV_OLS.png",dpi=150)
 plt.show()
 
-#%% Run it also for maxdegree=10
+#And now to degree 10
 maxdegree=10
-
-MSE_test = np.zeros(maxdegree)
-MSE_train = np.zeros(maxdegree)
-k=10
-
-# Decide degree on polynomial to fit
-poly = PolynomialFeatures(degree = 6)
-
-# Initialize a KFold instance
-k = 10
-kfold = KFold(n_splits = k)
-
-# Perform the cross-validation to estimate MSE
-scores_KFold_Train = np.zeros((maxdegree, k))
-scores_KFold_Test = np.zeros((maxdegree, k))
-
-#
-polydegree = np.zeros(maxdegree)
-
-i = 0
-for degree in range(maxdegree):
-    polydegree[degree] = degree+1
-    X = DesignMatrix(x,y,degree+1)
-    j = 0
-    for train_inds, test_inds in kfold.split(x):
-        X_train = X[train_inds]
-        z_train = z_scaled[train_inds]
-
-        X_test = X[test_inds]
-        z_test = z_scaled[test_inds]
-  
-        z_fit, z_pred, beta = LinReg(X_train, X_test, z_train)
-
-        scores_KFold_Train[i,j] = MSE(z_train, z_fit)
-        scores_KFold_Test[i,j] = MSE(z_test, z_pred)
-
-        j += 1
-    i += 1
-    
-estimated_mse_KFold_train = np.mean(scores_KFold_Train, axis = 1)
-estimated_mse_KFold_test = np.mean(scores_KFold_Test, axis = 1)
-
-plt.figure()
-plt.plot(polydegree, estimated_mse_KFold_train, label = 'KFold train')
-plt.plot(polydegree, estimated_mse_KFold_test, label = 'KFold test')
-plt.xlabel('Complexity')
-plt.ylabel('mse')
-plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
-plt.legend()
+TerrainOLS_CV(maxdegree,k, kfold, x1, y1, z_scaled)
 plt.title('K-fold Cross Validation, k = 10, OLS')
-plt.savefig("plots/Terrain/CV_OLS_pol1to10.png",dpi=150)
+#plt.savefig("plots/Terrain/CV_OLS_pol1to10.png",dpi=150)
 plt.show()
 
 #%% Make some more OLS plots
-#For complexity=4
-
+#For complexity=3
 x = np.linspace(0,1, np.shape(terrain)[0])
 y = np.linspace(0,1, np.shape(terrain)[1])
-z=terrain
+
 
 deg=3
 X1 = DesignMatrix(x,y,deg)
-OLSbeta1 = np.linalg.pinv(X1.T @ X1) @ X1.T @ z
+OLSbeta1 = np.linalg.pinv(X1.T @ X1) @ X1.T @ terrain
 ytilde1 = X1 @ OLSbeta1
 
-# Show the terrain
-plt.figure()
-plt.title('Terrain over Norway, OLS, pol=4')
-plt.imshow(ytilde1, cmap='viridis')
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.savefig("plots/Terrain/Map_v03_OLS_pol3.png",dpi=150)
-plt.show()
-
-
-
-
-#Plot 3D
-x = np.linspace(0,1, np.shape(terrain)[0])
-y = np.linspace(0,1, np.shape(terrain)[1])
-
-fig = plt.figure()
-ax = fig.gca(projection='3d')
-
-x, y = np.meshgrid(x,y)
-#z=np.reshape(terrain,x)
-
-# Plot the surface without noise
-surf = ax.plot_surface(x, y, ytilde1, cmap=cm.coolwarm,
-                       linewidth=0, antialiased=False)
-# Customize the z axis.
-ax.set_zlim(-0.10, 1.40)
-ax.zaxis.set_major_locator(LinearLocator(10))
-ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
-ax.set_zticks([0, 500, 1000, 1500])
-ax.axes.xaxis.set_ticklabels([])
-ax.axes.yaxis.set_ticklabels([])
-ax.axes.zaxis.set_ticklabels([])
+#Plot 3D OLS
+Plot3D(x,y,ytilde1)    
 plt.title('OLS, pol=3')
-# Add a color bar which maps values to colors.
-fig.colorbar(surf, shrink=0.5, aspect=5)
 #plt.savefig("plots/Terrain/Map_3d_OLS_pol3.png", dpi=150)
 plt.show()
 
-#%%
-# CV in Ridge
-maxdegree = 10 # polynomial order
+#%% RIDGE
 
 #set up the hyper-parameters to investigate
 nlambdas = 9
 lambdas = np.logspace(-4, 4, nlambdas)
-
-
-# Plot all in the same figure as subplots
 
 #Initialize before looping:
 polydegree = np.zeros(maxdegree)
@@ -327,7 +164,7 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles[::-1], labels[::-1], title='lambda', loc='center right', bbox_to_anchor=(1.27, 0.5))
 
 #Save figure
-plt.savefig("plots/Terrain/CV_Ridge_lambda_pol1to10.png",dpi=150, bbox_inches='tight')
+#plt.savefig("plots/Terrain/CV_Ridge_lambda_pol1to10.png",dpi=150, bbox_inches='tight')
 plt.show()
 
 #Compare train and test performance
@@ -339,7 +176,7 @@ plt.ylabel('mse')
 plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
 plt.legend()
 plt.title('K-fold Cross Validation, k=10, Ridge, lambda=10')
-plt.savefig("plots/Terrain/CV_Ridge_pol1to10.png",dpi=150)
+#plt.savefig("plots/Terrain/CV_Ridge_pol1to10.png",dpi=150)
 plt.show()
 
 #Create a heatmap with the error per nlambdas and polynomial degree
@@ -349,63 +186,23 @@ heatmap.set_ylabel("Complexity")
 heatmap.set_xlabel("lambda")
 heatmap.set_title("MSE heatmap, Cross Validation, kfold = {:}".format(k))
 plt.tight_layout()
-plt.savefig("plots/Terrain/CV_Ridge_heatmap_pol1to10.png",dpi=150)
+#plt.savefig("plots/Terrain/CV_Ridge_heatmap_pol1to10.png",dpi=150)
 plt.show()
 
 #%%
 #Make some more Ridge plots
 #For complexity=1, lambda=10^3 (MSE_train=0.82)
-x = np.linspace(0,1, np.shape(terrain)[0])
-y = np.linspace(0,1, np.shape(terrain)[1])
-z=terrain
-
-
 deg=5
 lmb=10
 
 X1 = DesignMatrix(x,y,deg)
-Ridgebeta1 = np.linalg.pinv(X1.T @ X1 + lmb*np.identity(X1.shape[1])) @ X1.T @ z
+Ridgebeta1 = np.linalg.pinv(X1.T @ X1 + lmb*np.identity(X1.shape[1])) @ X1.T @ terrain
 ytilde2 = X1 @ Ridgebeta1
 
-
-
-# Show the terrain
-plt.figure()
-plt.title('Terrain over Norway, Ridge')
-plt.imshow(ytilde2, cmap='viridis')
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.savefig("plots/Terrain/Map_v04_Ridge_pol5_lmb10.png",dpi=150)
-plt.show()
-
-
-
-
-#Plot 3D
-x = np.linspace(0,1, np.shape(terrain)[0])
-y = np.linspace(0,1, np.shape(terrain)[1])
-
-fig = plt.figure()
-ax = fig.gca(projection='3d')
-
-x, y = np.meshgrid(x,y)
-#z=np.reshape(terrain,x)
-
-# Plot the surface without noise
-surf = ax.plot_surface(x, y, ytilde2, cmap=cm.coolwarm,
-                       linewidth=0, antialiased=False)
-# Customize the z axis.
-ax.set_zlim(-0.10, 1.40)
-ax.zaxis.set_major_locator(LinearLocator(10))
-ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
-ax.set_zticks([0, 500,1000,1500])
-ax.axes.xaxis.set_ticklabels([])
-ax.axes.yaxis.set_ticklabels([])
-ax.axes.zaxis.set_ticklabels([])
+#Plot 3D Ridge
+Plot3D(x,y,ytilde2)    
 plt.title('Ridge, pol=4, lmb=10')
-# Add a color bar which maps values to colors.
-fig.colorbar(surf, shrink=0.5, aspect=5)
-plt.savefig("plots/Terrain/Map_3d_Ridge_pol4_lmb10.png", dpi=150)
+#plt.savefig("plots/Terrain/Map_3d_Ridge_pol4_lmb10.png", dpi=150)
 plt.show()
 
 #Compare train and test performance
@@ -417,17 +214,16 @@ plt.ylabel('mse')
 plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
 plt.legend()
 plt.title('K-fold Cross Validation, k = 10, Ridge, lambda=10')
-plt.savefig("plots/Terrain/CV_Ridge.png",dpi=150)
+#plt.savefig("plots/Terrain/CV_Ridge.png",dpi=150)
 plt.show()
 
 
 
 #%%
-#CV in Lasso
+#CV in Lasso: Many ConvergenceWarning, tested also by increasing number of iterations quite a lot, but we still get warnings.
+#In the lab session we were told that as long as we get meaningful results, we could ignore this warning
 
 #set up the hyper-parameters to investigate
-maxdegree=10
-nlambdas = 9
 lambdas = np.logspace(-6, 2, nlambdas)
 
 #Initialize before looping:
@@ -497,7 +293,7 @@ plt.ylabel('mse')
 plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
 plt.legend()
 plt.title('K-fold Cross Validation, k = 10, Lasso, lambda=0.01')
-plt.savefig("plots/Terrain/CV_Lasso_pol1to10.png",dpi=150)
+#plt.savefig("plots/Terrain/CV_Lasso_pol1to10.png",dpi=150)
 plt.show()
 
 #%%
@@ -509,60 +305,22 @@ heatmap.set_ylabel("Complexity")
 heatmap.set_xlabel("lambda")
 heatmap.set_title("MSE heatmap, Cross Validation, kfold = {:}".format(k))
 plt.tight_layout()
-plt.savefig("plots/Terrain/CV_Lasso_heatmap_pol1to10.png",dpi=150)
+#plt.savefig("plots/Terrain/CV_Lasso_heatmap_pol1to10.png",dpi=150)
 plt.show()
 
 #%%
 #Make some more Lasso plots
 #For complexity=4, lambda=10^-1 (MSE_train=0.82)
-x = np.linspace(0,1, np.shape(terrain)[0])
-y = np.linspace(0,1, np.shape(terrain)[1])
-z=terrain
-
-
 deg=4
 lmb=0.01
 
 X1 = DesignMatrix(x,y,deg)
 modelLasso = Lasso(lmb,fit_intercept=False)
-modelLasso.fit(X1,z)
+modelLasso.fit(X1,terrain)
 ytilde3 = modelLasso.predict(X1)
 
-# Show the terrain
-plt.figure()
-plt.title('Terrain over Norway, Lasso')
-plt.imshow(ytilde3, cmap='viridis')
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.savefig("plots/Terrain/Map_v05_Lasso_pol4_lmb0_01.png",dpi=150)
-plt.show()
-
-
-
-
-#Plot 3D
-x = np.linspace(0,1, np.shape(terrain)[0])
-y = np.linspace(0,1, np.shape(terrain)[1])
-
-fig = plt.figure()
-ax = fig.gca(projection='3d')
-
-x, y = np.meshgrid(x,y)
-#z=np.reshape(terrain,x)
-
-# Plot the surface without noise
-surf = ax.plot_surface(x, y, ytilde3, cmap=cm.coolwarm,
-                       linewidth=0, antialiased=False)
-# Customize the z axis.
-ax.set_zlim(-0.10, 1.40)
-ax.zaxis.set_major_locator(LinearLocator(10))
-ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
-ax.set_zticks([0, 500, 1000, 1500])
-ax.axes.xaxis.set_ticklabels([])
-ax.axes.yaxis.set_ticklabels([])
-ax.axes.zaxis.set_ticklabels([])
+#Plot 3D Ridge
+Plot3D(x,y,ytilde3)    
 plt.title('Lasso, pol=4, lmd=0.01')
-# Add a color bar which maps values to colors.
-fig.colorbar(surf, shrink=0.5, aspect=5)
-plt.savefig("plots/Terrain/Map_3d_Lasso_pol4_lmb0_01.png", dpi=150)
+#plt.savefig("plots/Terrain/Map_3d_Lasso_pol4_lmb0_01.png", dpi=150)
 plt.show()
