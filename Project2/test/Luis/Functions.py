@@ -151,6 +151,7 @@ def TerrainOLS_CV(maxdegree,k, kfold, x, y, z_scaled):
     plt.legend()
     
 def create_mini_batches(X, y, batch_size):
+    y=y.reshape(y.shape[0],1)
     mini_batches = []
     data = np.hstack((X, y))
     np.random.shuffle(data)
@@ -169,3 +170,17 @@ def create_mini_batches(X, y, batch_size):
         mini_batches.append((X_mini, Y_mini))
     return mini_batches
 
+def create_FF_data(n):
+    x = np.random.uniform(0,1,n)
+    y = np.random.uniform(0,1,n)
+    
+    var=0.1
+    z = FrankeFunction(x, y)+ np.random.normal(0,var,x.shape)
+    #z = 1 + x + y + x*y + x**2 + y**2
+    
+    x = np.array(x).reshape(n,1)
+    y = np.array(y).reshape(n,1)
+    x1 = np.hstack((x,y)).reshape(n,2)
+    z = np.reshape(z,(z.shape[0],1))
+   
+    return  x1, z
