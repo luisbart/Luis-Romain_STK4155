@@ -121,7 +121,7 @@ m = int(z_train.shape[0]/M) #number of minibatches
 epochs = 1000 #number of epochs 
 
 etas = np.logspace(-4, -1, 4)
-lambdas = np.logspace(-5,2, 8)
+lambdas = np.logspace(-5, 2, 8)
 n_hidden_neurons = [4]
 n_hidden_neurons_v02 = 4
 n_categories = 1

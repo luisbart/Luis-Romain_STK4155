@@ -1,0 +1,39 @@
+washington tree map: https://opendata.dc.gov/datasets/DCGIS::urban-forestry-street-trees/about
+
+lidar: https://opendata.dc.gov/search?q=lidar (Lidar grid tiles):
+https://opendata.dc.gov/apps/lidar-grid-tiles/explore
+
+
+laszip -i data\flight*.las -merged -o merged.laz
+
+
+ignore class 6 (buildings)
+
+
+Trees. Chosen species (5 deciduous and 5 coniferous):
+1. Acer		10385
+2. Quercus		15910
+3. Ulmus		2245
+4. Platanus		2870
+5. Cercis		915
+			32170
+			
+
+6. Taxodium		426
+7. Pinus		103
+8. Ilex		87
+9. Cedrus		21
+10. Juniperus	99
+
+
+cryptomeria		6
+Picea 		16
+tsuga canadiensis 5
+Thuja			7
+			744
+
+input_trees_v02: reduce the number of deciduous to ca. 1000, randomly
+input_trees_v03: reduce the number per sp to ca. 500 (for deciduous)
+
+
+	

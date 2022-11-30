@@ -161,7 +161,7 @@ for lmbd in lambdas:
         NN_err_test[i,j] = accuracy_score(z_test,z_pred)
        
         #####scikit NN implementation#####
-        dnn2 = MLPClassifier(hidden_layer_sizes=n_hidden_neurons, activation='relu', solver ='lbfgs',
+        dnn2 = MLPClassifier(hidden_layer_sizes=n_hidden_neurons, activation='relu', solver ='lbfgs', 
                             alpha=lmbd, batch_size = M, learning_rate_init=eta, max_iter=epochs)
         dnn2.fit(x_train, z_train_ravel)
         z_fit2 = dnn2.predict(x_train)
