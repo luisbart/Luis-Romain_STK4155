@@ -13,10 +13,10 @@ from  matplotlib.colors import LogNorm
 import seaborn as sns
 from sklearn.model_selection import train_test_split as splitter
 from sklearn.metrics import accuracy_score, confusion_matrix
-from sklearn.datasets import load_breast_cancer
+from sklearn.preprocessing import StandardScaler
 import pickle
 import os 
-from sklearn.neural_network import MLPRegressor, MLPClassifier
+from sklearn.neural_network import MLPClassifier
 
 #%%
 import os
@@ -37,10 +37,11 @@ y2=trees['Specie']
 
 x_train,x_test,y_train,y_test=splitter(x,y1,test_size=0.3)   #Split datasets into training and testing
 
-#Scaling
-x_train_mean = np.mean(x_train)
-x_train = x_train - x_train_mean
-x_test = x_test - x_train_mean
+#Scale the data
+scaler = StandardScaler()
+scaler.fit(x_train)
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test)
 
 M = 100   #size of each minibatch
 m = int(y_train.shape[0]/M) #number of minibatches
