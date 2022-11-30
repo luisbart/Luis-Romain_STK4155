@@ -35,5 +35,7 @@ Thuja			7
 input_trees_v02: reduce the number of deciduous to ca. 1000, randomly
 input_trees_v03: reduce the number per sp to ca. 500 (for deciduous)
 
+Add cross validation to NN! Con_dec works ok. species not good
+
 
 	
