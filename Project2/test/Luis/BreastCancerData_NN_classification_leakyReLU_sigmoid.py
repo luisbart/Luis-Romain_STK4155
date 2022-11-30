@@ -38,7 +38,7 @@ def create_neural_network_keras(n_neurons_layer1, n_categories, eta, lmbd):
     model.add(Dense(n_categories, activation='sigmoid'))
     
     sgd = optimizers.SGD(lr=eta)
-    model.compile(loss='mse', optimizer=sgd, metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
     
     return model
 

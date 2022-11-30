@@ -15,7 +15,7 @@ from sklearn.datasets import load_breast_cancer
 import pickle
 import os 
 from Functions import Beta_std, FrankeFunction, R2, MSE, DesignMatrix, LinReg
-from NeuralNetwork_classification_leakyrelu_tanh import NeuralNetwork, leakyrelu, leakyrelu_grad, sigmoid,  accuracy_score_numpy
+#from NeuralNetwork_classification_leakyrelu_tanh import NeuralNetwork, leakyrelu, leakyrelu_grad, sigmoid,  accuracy_score_numpy
 from sklearn.neural_network import MLPRegressor, MLPClassifier
 
 #%%
@@ -36,7 +36,7 @@ def create_neural_network_keras(n_neurons_layer1, n_categories, eta, lmbd):
     model.add(Dense(n_categories, activation='tanh'))
     
     sgd = optimizers.SGD(lr=eta)
-    model.compile(loss='mse', optimizer=sgd, metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
     
     return model
 
@@ -61,33 +61,35 @@ x=inputs      #Reassign the Feature and Label matrices to other variables
 y=outputs
 
 
+
+
 #%%
 # Visualisation of dataset (for correlation analysis)
 
-plt.figure()
-plt.scatter(x[:,0],x[:,2],s=40,c=y,cmap=plt.cm.Spectral)
-plt.xlabel('Mean radius',fontweight='bold')
-plt.ylabel('Mean perimeter',fontweight='bold')
-plt.show()
+fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(15, 15))
+ax1.plot
 
-plt.figure()
-plt.scatter(x[:,5],x[:,6],s=40,c=y, cmap=plt.cm.Spectral)
-plt.xlabel('Mean compactness',fontweight='bold')
-plt.ylabel('Mean concavity',fontweight='bold')
-plt.show()
+#ax1.figure()
+ax1.scatter(x[:,0],x[:,2],s=40,c=y,cmap=plt.cm.Spectral)
+ax1.set_xlabel('Mean radius [mm]',fontweight='bold', fontsize = 15)
+ax1.set_ylabel('Mean perimeter [mm]',fontweight='bold', fontsize = 15)
 
+#ax2.figure()
+ax2.scatter(x[:,5],x[:,6],s=40,c=y, cmap=plt.cm.Spectral)
+ax2.set_xlabel('Mean compactness',fontweight='bold', fontsize = 15)
+ax2.set_ylabel('Mean concavity',fontweight='bold', fontsize = 15)
 
-plt.figure()
-plt.scatter(x[:,0],x[:,1],s=40,c=y,cmap=plt.cm.Spectral)
-plt.xlabel('Mean radius',fontweight='bold')
-plt.ylabel('Mean texture',fontweight='bold')
-plt.show()
+#ax3.figure()
+ax3.scatter(x[:,0],x[:,1],s=40,c=y,cmap=plt.cm.Spectral)
+ax3.set_xlabel('Mean radius [mm]',fontweight='bold', fontsize = 15)
+ax3.set_ylabel('Mean texture',fontweight='bold', fontsize = 15)
 
-plt.figure()
-plt.scatter(x[:,2],x[:,1],s=40,c=y,cmap=plt.cm.Spectral)
-plt.xlabel('Mean perimeter',fontweight='bold')
-plt.ylabel('Mean compactness',fontweight='bold')
-plt.show()
+#ax4.figure()
+ax4.scatter(x[:,2],x[:,1],s=40,c=y,cmap=plt.cm.Spectral)
+ax4.set_xlabel('Mean perimeter [mm]',fontweight='bold', fontsize = 15)
+ax4.set_ylabel('Mean compactness',fontweight='bold', fontsize = 15)
+
+plt.savefig(f"Results/NN/BreastCancer_4variables.png", dpi=150)
 
 #%%
 # Generate training and testing datasets

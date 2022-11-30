@@ -28,12 +28,13 @@ from tensorflow.keras import layers
 from tensorflow.keras import activations
 from tensorflow.keras.layers import LeakyReLU
 
-def create_neural_network_keras(n_categories, eta, lmbd):
+def create_neural_network_keras(n_neurons_layer1, n_categories, eta, lmbd):
     model = Sequential()
-    model.add(Dense(n_categories, activation='sigmoid'))
+    model.add(Dense(n_neurons_layer1, activation='sigmoid', kernel_regularizer=regularizers.l2(lmbd)))
+    model.add(Dense(n_categories, activation='softmax'))
     
     sgd = optimizers.SGD(lr=eta)
-    model.compile(loss='mse', optimizer=sgd, metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
     
     return model
 
@@ -123,6 +124,7 @@ epochs = 1000 #number of epochs
 etas = np.logspace(-4, -1, 4)
 lambdas = np.logspace(-5,2, 8)
 n_hidden_neurons = []
+n_hidden_neuronsv02=0
 n_categories = 1
 n_features = x_train.shape[1]
 n_inputs = x_train.shape[0]
@@ -148,29 +150,29 @@ for lmbd in lambdas:
     j=0  
     for eta in etas: 
         
-        #####own NN implementation######
-        dnn = NeuralNetwork(x_train, z_train, eta=eta, lmbd=lmbd, epochs=epochs, batch_size=M, n_hidden_neurons=n_hidden_neurons, n_categories=n_categories)
-        dnn.train()
+        # ####own NN implementation######
+        # dnn = NeuralNetwork(x_train, z_train, eta=eta, lmbd=lmbd, epochs=epochs, batch_size=M, n_hidden_neurons=n_hidden_neurons, n_categories=n_categories)
+        # dnn.train()
         
-        z_fit = dnn.predict2(x_train)
-        z_pred = dnn.predict2(x_test)
+        # z_fit = dnn.predict2(x_train)
+        # z_pred = dnn.predict2(x_test)
         
         
-        NN_err_train[i,j] = accuracy_score(z_train,z_fit)
-        NN_err_test[i,j] = accuracy_score(z_test,z_pred)
+        # NN_err_train[i,j] = accuracy_score(z_train,z_fit)
+        # NN_err_test[i,j] = accuracy_score(z_test,z_pred)
        
-        #####scikit NN implementation#####
-        dnn2 = MLPClassifier(hidden_layer_sizes=n_hidden_neurons, activation='relu', solver ='lbfgs',
-                            alpha=lmbd, batch_size = M, learning_rate_init=eta, max_iter=epochs)
-        dnn2.fit(x_train, z_train_ravel)
-        z_fit2 = dnn2.predict(x_train)
-        z_pred2 = dnn2.predict(x_test)
+        # #####scikit NN implementation#####
+        # dnn2 = MLPClassifier(hidden_layer_sizes=n_hidden_neurons, activation='relu', solver ='lbfgs',
+        #                     alpha=lmbd, batch_size = M, learning_rate_init=eta, max_iter=epochs)
+        # dnn2.fit(x_train, z_train_ravel)
+        # z_fit2 = dnn2.predict(x_train)
+        # z_pred2 = dnn2.predict(x_test)
         
-        DNN_scikit_train[i,j] = accuracy_score_numpy(z_train_ravel,z_fit2)
-        DNN_scikit_test[i,j] = accuracy_score_numpy(z_test_ravel,z_pred2)
+        # DNN_scikit_train[i,j] = accuracy_score_numpy(z_train_ravel,z_fit2)
+        # DNN_scikit_test[i,j] = accuracy_score_numpy(z_test_ravel,z_pred2)
 #       
         #####Keras NN implementation#####
-        dnn3 = create_neural_network_keras(n_categories, eta=eta, lmbd=lmbd)
+        dnn3 = create_neural_network_keras(n_hidden_neuronsv02, n_categories, eta=eta, lmbd=lmbd)
         dnn3.fit(x_train, z_train, epochs=epochs, batch_size=M, verbose=0)
         DNN_keras_train[i][j] = dnn3.evaluate(x_train, z_train)[0]
         DNN_keras_test[i][j] = dnn3.evaluate(x_test, z_test)[0]           
