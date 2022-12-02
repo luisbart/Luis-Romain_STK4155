@@ -47,7 +47,7 @@ x_train, x_test, z_train, z_test = train_test_split(x1, z, test_size=0.2)
 
 #%%
 #Define maximal model complexity
-maxdegree= 25
+maxdegree= 5
 
 #Initialize before looping:
 TestError = np.zeros(maxdegree)
@@ -88,5 +88,7 @@ plt.ylabel('Error')
 plt.xlabel('Model complexity')
 plt.title("Variance-Bias tradeoff for Ridge")
 plt.legend()
-plt.savefig("Results/bias_variance_tradeoff/Lasso_bias_var_tradeoff.png",dpi=150)
+#plt.savefig("Results/bias_variance_tradeoff/Lasso_bias_var_tradeoff.png",dpi=150)
 plt.show()
+
+temp=error-(bias+variance)

@@ -68,10 +68,13 @@ print("Regularization params to search:")
 alpha_vals = np.logspace(-3, 1, 5)
 print(alpha_vals)
 
+eta=1e-5
+alpha=1
+
 hyperparameters_to_search = {
-    "hidden_layer_sizes" : [[5, 10, 20, 50],[0, 5, 10, 20, 50]],
-    "alpha" : alpha_vals,
-    "learning_rate_init" : eta_vals
+    "hidden_layer_sizes" : [[5,0],[5,5]],
+    "alpha" : [alpha],
+    "learning_rate_init" : [eta]
 }
 
 regression = GridSearchCV(

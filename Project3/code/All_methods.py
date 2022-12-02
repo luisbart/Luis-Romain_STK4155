@@ -8,7 +8,7 @@ Created on Wed Nov 30 21:36:12 2022
 #%%
 # Common imports
 from IPython.display import Image 
-from pydot import graph_from_dot_data
+#from pydot import graph_from_dot_data
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,7 +16,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.tree import export_graphviz
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
-from pydot import graph_from_dot_data
 from sklearn.datasets import load_breast_cancer
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
@@ -27,6 +26,7 @@ from sklearn.model_selection import cross_validate
 import scikitplot as skplt
 from sklearn.preprocessing import StandardScaler
 from sklearn.neural_network import MLPClassifier
+from sklearn.model_selection import train_test_split as splitter
 import os
 
 #%%
@@ -85,9 +85,9 @@ y_pred = dnn.predict(x_test_scaled)
 skplt.metrics.plot_confusion_matrix(y_test, y_pred, normalize=True)
 plt.show()
 y_probas = dnn.predict_proba(x_test_scaled)
-skplt.metrics.plot_roc(y_test, y_probas3)
+skplt.metrics.plot_roc(y_test, y_probas)
 plt.show()
-skplt.metrics.plot_cumulative_gain(y_test, y_probas3)
+skplt.metrics.plot_cumulative_gain(y_test, y_probas)
 plt.show()
 
 #Confusion matrix with Random Forest
@@ -123,9 +123,6 @@ plt.show()
 #%%
 from sklearn.tree import plot_tree
 
-
-
-
 plt.figure(figsize=(150, 100))
 plot_tree(Random_Forest_model.estimators_[0], 
           feature_names=['min', 'max', 'avg', 'std', 'ske', 'kur', 'p05', 'p25','p50', 'p75', 'p90', 'c00', 'int_min', 'int_max', 'int_avg', 'int_std','int_ske', 'int_kur', 'int_p05', 'int_p25', 'int_p50', 'int_p75','int_p90'],
@@ -133,23 +130,6 @@ plot_tree(Random_Forest_model.estimators_[0],
           filled=True, impurity=True, 
           rounded=True)
 plt.savefig(f"Results/RF_diagram.png", dpi=150)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
