@@ -6,6 +6,10 @@ Created on Fri Dec  2 07:31:06 2022
 """
 
 #%%
+import os
+os.chdir("C:/Users/luis.barreiro/Documents/GitHub/Projects_STK4155/Project3")
+cwd = os.getcwd()
+print(cwd)
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -47,7 +51,7 @@ x_train, x_test, z_train, z_test = train_test_split(x1, z, test_size=0.2)
 
 #%%
 #Define maximal model complexity
-maxdegree= 5
+maxdegree= 25
 
 #Initialize before looping:
 TestError = np.zeros(maxdegree)
@@ -85,10 +89,12 @@ plt.plot(range(1,maxdegree+1), error, label = 'Error')
 plt.plot(range(1,maxdegree+1), bias, label = 'Bias')
 plt.plot(range(1,maxdegree+1), variance, label = 'Variance')
 plt.ylabel('Error')
-plt.xlabel('Model complexity')
-plt.title("Variance-Bias tradeoff for Ridge")
+plt.xlabel('Model complexity: polynomial degree')
+plt.title("Variance-Bias tradeoff for Lasso")
 plt.legend()
-#plt.savefig("Results/bias_variance_tradeoff/Lasso_bias_var_tradeoff.png",dpi=150)
+plt.savefig("Results/bias_variance_tradeoff/Lasso_bias_var_tradeoff.png",dpi=150)
 plt.show()
 
+#Check that bias+variance=error
 temp=error-(bias+variance)
+print(temp)

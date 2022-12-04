@@ -97,9 +97,10 @@ for degree in range(maxdegree):
 plt.plot(polydegree, error, label='Error')
 plt.plot(polydegree, bias, label='bias')
 plt.plot(polydegree, variance, label='Variance')
-plt.xticks(np.arange(1, 8, step=1))  # Set label locations.
-plt.xlabel('Model complexity')
+plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
+plt.xlabel('Model complexity: polynomial degree')
 plt.ylabel('Mean squared error')
+plt.title("Variance-Bias tradeoff for OLS")
 plt.legend()
-#plt.savefig("Results/bias_variance_tradeoff/OLS_bias_var_tradeoff.png",dpi=150)
+plt.savefig("Results/bias_variance_tradeoff/OLS_bias_var_tradeoff.png",dpi=150)
 plt.show()

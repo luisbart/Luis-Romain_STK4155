@@ -96,7 +96,7 @@ fig.text(0.5, 0.08, 'Model complexity', ha='center')
 fig.text(0.07, 0.5, 'Error', va='center', rotation='vertical')
 fig.suptitle("Variance-Bias tradeoff for different lambda (Ridge)", fontsize=18, y=0.95)
 plt.legend()
-plt.savefig("plots/Ridge_Lasso/Ridge_Bias_Variance_trade_off_LAMBDAS.png",dpi=150)
+#plt.savefig("plots/Ridge_Lasso/Ridge_Bias_Variance_trade_off_LAMBDAS.png",dpi=150)
 plt.show()
 
 #%%
