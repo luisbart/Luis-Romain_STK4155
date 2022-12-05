@@ -68,7 +68,7 @@ x_train, x_test, z_train, z_test = train_test_split(x1, z, test_size=0.2)
 #z_test = z_test.astype('int')
     
 #Scaling not needed
-#%%
+#%% Bias-variance tradeoff. Constrained decision tree by depth
 #inizializing before looping:
 max_depth=15
 error = np.zeros(max_depth)
@@ -98,11 +98,46 @@ plt.xlabel('Model complexity: depth of the tree')
 plt.title("Variance-Bias tradeoff for RF")
 plt.xticks(np.arange(0, max_depth+1, step=2))  # Set label locations.
 plt.legend()
-plt.savefig("Results/bias_variance_tradeoff/RF_bias_var_tradeoff.png",dpi=150)
+#plt.savefig("Results/bias_variance_tradeoff/RF_bias_var_tradeoff.png",dpi=150)
 plt.show()
 
 #Check that bias+variance=error
 temp=error-(bias+variance)
 print(temp)
 
+#%% Bias-variance tradeoff. Constrained decision tree by leaf
+#inizializing before looping:
+min_samples_leaf=50
+error = np.zeros(min_samples_leaf)
+bias = np.zeros(min_samples_leaf)
+variance = np.zeros(min_samples_leaf)
 
+for n in range(min_samples_leaf):
+    z_pred = np.empty((z_test.shape[0],n_bootstraps))
+    for i in range(n_bootstraps):
+        x_, z_ = resample(x_train,z_train)
+        
+        Random_Forest_model = RandomForestRegressor(min_samples_leaf=n+1)
+        Random_Forest_model.fit(x_, z_)
+        print("Test set accuracy with Random Forests: {:.2f}".format(Random_Forest_model.score(x_,z_)))
+        z_pred[:, i] = Random_Forest_model.predict(x_test)
+        
+    error[n] = np.mean( np.mean((z_test - z_pred)**2, axis=1, keepdims=True) )
+    bias[n] = np.mean( (z_test - np.mean(z_pred, axis=1, keepdims=True))**2 )
+    variance[n] = np.mean( np.var(z_pred, axis=1, keepdims=True) )
+
+
+plt.plot(range(1,min_samples_leaf+1), error[:], label = 'Error')
+plt.plot(range(1,min_samples_leaf+1), bias[:], label = 'Bias')
+plt.plot(range(1,min_samples_leaf+1), variance[:], label = 'Variance')
+plt.ylabel('Error')
+plt.xlabel('Model complexity: min samples leaf')
+plt.title("Variance-Bias tradeoff for RF")
+plt.xticks(np.arange(0, min_samples_leaf+1, step=5))  # Set label locations.
+plt.legend()
+plt.savefig("Results/bias_variance_tradeoff/RF_bias_var_tradeoff_v02.png",dpi=150)
+plt.show()
+
+#Check that bias+variance=error
+temp=error-(bias+variance)
+print(temp)

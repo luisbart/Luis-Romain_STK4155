@@ -62,7 +62,7 @@ kf = KFold(n_splits)
 #define methods
 
 # Neural Network with 4 hidden layers, eta=1.e-5, lmbd=10
-dnn = MLPClassifier(hidden_layer_sizes=4, activation='relu', solver ='lbfgs',alpha=10, learning_rate_init=1.e-5, max_iter=1000)
+dnn = MLPClassifier(hidden_layer_sizes=4, activation='relu', solver ='lbfgs',alpha=10, learning_rate_init=1.e-5, max_iter=1000, random_state=1)
 score_kf_NN = np.zeros(n_splits)
 j=0
 for train_indices, test_indices in kf.split(x_scaled):
@@ -72,7 +72,7 @@ for train_indices, test_indices in kf.split(x_scaled):
 print("Test set accuracy Neural Network with scaled data: {:.2f}".format(np.mean(score_kf_NN)))
 
 # Logistic Regression
-logreg = LogisticRegression(solver='lbfgs')
+logreg = LogisticRegression(solver='lbfgs', random_state=1)
 score_kf_logreg = np.zeros(n_splits)
 j=0
 for train_indices, test_indices in kf.split(x_scaled):
@@ -82,7 +82,7 @@ for train_indices, test_indices in kf.split(x_scaled):
 print("Test set accuracy Logistic Regression with scaled data: {:.2f}".format(np.mean(score_kf_logreg)))
 
 # Decision Trees
-deep_tree_clf = DecisionTreeClassifier(max_depth=None)
+deep_tree_clf = DecisionTreeClassifier(max_depth=None, random_state=1)
 score_kf_deep_tree_clf = np.zeros(n_splits)
 j=0
 for train_indices, test_indices in kf.split(x_scaled):
@@ -92,7 +92,7 @@ for train_indices, test_indices in kf.split(x_scaled):
 print("Test set accuracy Decision Trees with scaled data: {:.2f}".format(np.mean(score_kf_deep_tree_clf)))
  
 # Support Vector Machine
-svm = SVC(gamma='auto', C=100)
+svm = SVC(gamma='auto', C=100, random_state=1)
 score_kf_svm = np.zeros(n_splits)
 j=0
 for train_indices, test_indices in kf.split(x_scaled):
@@ -103,7 +103,7 @@ print("Test set accuracy SVM with scaled data: {:.2f}".format(np.mean(score_kf_s
 
 # Random forests
 #Instantiate the model with 100 trees and entropy as splitting criteria
-Random_Forest_model = RandomForestClassifier(n_estimators=100,criterion="gini")
+Random_Forest_model = RandomForestClassifier(n_estimators=100,criterion="gini", random_state=1)
 score_kf_RF = np.zeros(n_splits)
 j=0
 for train_indices, test_indices in kf.split(x_scaled):
@@ -114,7 +114,7 @@ print("Test set accuracy Random Forest with scaled data: {:.2f}".format(np.mean(
 
 
 #%%
-x_train,x_test,y_train,y_test=splitter(x,y,test_size=0.3)   #Split datasets into training and testing: not needed when we use CV
+x_train,x_test,y_train,y_test=splitter(x,y,test_size=0.3)   
 
 #Scale the data
 scaler = StandardScaler()
@@ -123,62 +123,74 @@ x_train_scaled = scaler.transform(x_train)
 x_test_scaled = scaler.transform(x_test)
 x_scaled = scaler.transform(x)
 
-#Confusion matrix with Neural Network
+#Confusion matrix with Neural Network (normalized)
 dnn.fit(x_train_scaled, y_train)
 y_pred = dnn.predict(x_test_scaled)
 skplt.metrics.plot_confusion_matrix(y_test, y_pred, normalize=True)
+plt.title("MLP")
+plt.savefig("Results/Conf_matrix_NN.png",dpi=150)
 plt.show()
-# y_probas = dnn.predict_proba(x_test_scaled)
-# skplt.metrics.plot_roc(y_test, y_probas)
-# plt.show()
-# skplt.metrics.plot_cumulative_gain(y_test, y_probas)
-# plt.show()
+y_probas = dnn.predict_proba(x_test_scaled)
+skplt.metrics.plot_roc(y_test, y_probas)
+plt.show()
+skplt.metrics.plot_cumulative_gain(y_test, y_probas)
+plt.show()
 
 #Confusion matrix with Random Forest
 Random_Forest_model.fit(x_train_scaled, y_train)
 y_pred1 = Random_Forest_model.predict(x_test_scaled)
 skplt.metrics.plot_confusion_matrix(y_test, y_pred1, normalize=True)
+plt.title("RF")
+plt.savefig("Results/Conf_matrix_RF.png",dpi=150)
 plt.show()
-# y_probas1 = Random_Forest_model.predict_proba(x_test_scaled)
-# skplt.metrics.plot_roc(y_test, y_probas1)
-# plt.show()
-# skplt.metrics.plot_cumulative_gain(y_test, y_probas1)
-# plt.show()
+y_probas1 = Random_Forest_model.predict_proba(x_test_scaled)
+skplt.metrics.plot_roc(y_test, y_probas1)
+plt.savefig("Results/ROC_RF.png",dpi=150)
+plt.show()
+skplt.metrics.plot_cumulative_gain(y_test, y_probas1)
+plt.savefig("Results/CumGainsCurve_RF.png",dpi=150)
+plt.show()
 
 #Confusion matrix with SVM
 svm.fit(x_train_scaled, y_train)
 y_pred2 = svm.predict(x_test_scaled)
 skplt.metrics.plot_confusion_matrix(y_test, y_pred2, normalize=True)
+plt.title("SVM")
+plt.savefig("Results/Conf_matrix_SVM.png",dpi=150)
 plt.show()
-# y_probas2 = svm.predict_proba(x_test_scaled)
-# skplt.metrics.plot_roc(y_test, y_probas2)
-# plt.show()
-# skplt.metrics.plot_cumulative_gain(y_test, y_probas2)
-# plt.show()
+y_probas2 = svm.predict_proba(x_test_scaled)
+skplt.metrics.plot_roc(y_test, y_probas2)
+plt.show()
+skplt.metrics.plot_cumulative_gain(y_test, y_probas2)
+plt.show()
 
 
 #Confusion matrix with Logistic
 logreg.fit(x_train_scaled, y_train)
 y_pred3 = logreg.predict(x_test_scaled)
 skplt.metrics.plot_confusion_matrix(y_test, y_pred3, normalize=True)
+plt.title("Logreg")
+plt.savefig("Results/Conf_matrix_Logreg.png",dpi=150)
 plt.show()
-# y_probas3 = logreg.predict_proba(x_test_scaled)
-# skplt.metrics.plot_roc(y_test, y_probas3)
-# plt.show()
-# skplt.metrics.plot_cumulative_gain(y_test, y_probas3)
-# plt.show()
+y_probas3 = logreg.predict_proba(x_test_scaled)
+skplt.metrics.plot_roc(y_test, y_probas3)
+plt.show()
+skplt.metrics.plot_cumulative_gain(y_test, y_probas3)
+plt.show()
 
 
 #Confusion matrix with Decision tree
 deep_tree_clf.fit(x_train_scaled, y_train)
-y_pred4 = logreg.predict(x_test_scaled)
+y_pred4 = deep_tree_clf.predict(x_test_scaled)
 skplt.metrics.plot_confusion_matrix(y_test, y_pred4, normalize=True)
+plt.title("DT")
+plt.savefig("Results/Conf_matrix_DT.png",dpi=150)
 plt.show()
-# y_probas3 = logreg.predict_proba(x_test_scaled)
-# skplt.metrics.plot_roc(y_test, y_probas3)
-# plt.show()
-# skplt.metrics.plot_cumulative_gain(y_test, y_probas3)
-# plt.show()
+y_probas3 = logreg.predict_proba(x_test_scaled)
+skplt.metrics.plot_roc(y_test, y_probas3)
+plt.show()
+skplt.metrics.plot_cumulative_gain(y_test, y_probas3)
+plt.show()
 
 
 
@@ -190,6 +202,9 @@ print("Precision, recall, F1 score for SVM (coniferous, deciduous):",precision_r
 print("Precision, recall, F1 score for logreg (coniferous, deciduous):",precision_recall_fscore_support(y_test, y_pred3))
 print("Precision, recall, F1 score for decision tree (coniferous, deciduous):",precision_recall_fscore_support(y_test, y_pred4))
 
+F1_table = list(precision_recall_fscore_support(y_test, y_pred))
+F1_table.append(precision_recall_fscore_support(y_test, y_pred1))
+
 #%%
 from sklearn.tree import plot_tree
 
@@ -200,6 +215,24 @@ plot_tree(Random_Forest_model.estimators_[0],
           filled=True, impurity=True, 
           rounded=True)
 plt.savefig(f"Results/RF_diagram.png", dpi=150)
+
+
+
+
+#%% Feature importance in RF
+features=['min', 'max', 'avg', 'std', 'ske', 'kur', 'p05', 'p25','p50', 'p75', 'p90', 'c00', 'int_min', 'int_max', 'int_avg', 'int_std','int_ske', 'int_kur', 'int_p05', 'int_p25', 'int_p50', 'int_p75','int_p90']
+
+importances = Random_Forest_model.feature_importances_
+std = np.std(importances)
+forest_importances = pd.Series(importances, index=features)
+
+fig, ax = plt.subplots()
+forest_importances.plot.bar(yerr=std, ax=ax)
+ax.set_title("Feature importances")
+ax.set_ylabel("Importance in %")
+fig.tight_layout()
+plt.savefig("Results/Feature_imporcance_RF.png",dpi=150)
+
 
 
 

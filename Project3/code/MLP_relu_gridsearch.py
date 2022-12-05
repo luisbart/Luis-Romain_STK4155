@@ -54,7 +54,7 @@ epochs = 100000 #number of epochs
 eta_vals = np.logspace(-8, -5, 4)
 lmbd_vals = np.logspace(-3, 1, 5)
 n_hidden_neurons = 20
-epochs = 100 #number of epochs 
+epochs = 1000 #number of epochs 
 
 DNN_scikit = np.zeros((len(eta_vals), len(lmbd_vals)), dtype=object)
 
@@ -70,11 +70,9 @@ for i, eta in enumerate(eta_vals):
         print("Lambda = ", lmbd)
         print("Accuracy score on test set: ", dnn.score(x_test, y_test))
         print()
-        
 
 #%%
 # visual representation of grid search
-# uses seaborn heatmap, could probably do this in matplotlib
 
 sns.set()
 
@@ -93,19 +91,11 @@ for i in range(len(eta_vals)):
 
         
 fig, ax = plt.subplots(figsize = (10, 10))
-sns.heatmap(train_accuracy, annot=True, ax=ax, cmap="viridis", xticklabels=lmbd_vals, yticklabels=eta_vals)
-ax.set_title("Training Accuracy")
-ax.set_ylabel("$\eta$")
-ax.set_xlabel("$\lambda$")
-plt.savefig(f"Results/NN/NN_TrainingAccuracy_relu_CON_DEC_.png", dpi=150)
-plt.show()
-
-fig, ax = plt.subplots(figsize = (10, 10))
 sns.heatmap(test_accuracy, annot=True, ax=ax, cmap="viridis", xticklabels=lmbd_vals, yticklabels=eta_vals)
 ax.set_title("Test Accuracy")
 ax.set_ylabel("$\eta$")
 ax.set_xlabel("$\lambda$")
-plt.savefig(f"Results/NN/NN_TestAccuracy_relu_CON_DEC_.png", dpi=150)
+plt.savefig(f"Results/NN_TestAccuracy_relu_CON_DEC_.png", dpi=150)
 plt.show()
 
         
@@ -141,7 +131,7 @@ for i in range(conf_matrix.shape[0]):
 plt.xlabel('Predictions', fontsize=18)
 plt.ylabel('Actuals', fontsize=18)
 plt.title('Confusion Matrix', fontsize=18)
-plt.savefig(f"Results/NN/NN_Conf_Matrix_relu_CON_DEC_.png", dpi=150)
+plt.savefig(f"Results/NN_Conf_Matrix_relu_CON_DEC_.png", dpi=150)
 plt.show()        
         
 TP=conf_matrix[1,1]
@@ -158,26 +148,4 @@ print("Accuracy:",Accuracy)
 print("F1_score", F1_score)        
         
         
-#%%        
-conf_matrix = confusion_matrix(y_train, train_pred2)
-
-# Print the confusion matrix using Matplotlib
-
-fig, ax = plt.subplots(figsize=(7.5, 7.5))
-ax.matshow(conf_matrix, cmap=plt.cm.Blues, alpha=0.3)
-for i in range(conf_matrix.shape[0]):
-    for j in range(conf_matrix.shape[1]):
-        ax.text(x=j, y=i,s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
- 
-plt.xlabel('Predictions', fontsize=18)
-plt.ylabel('Actuals', fontsize=18)
-plt.title('Confusion Matrix', fontsize=18)
-
-
-y_test['CON_DEC'].value_counts()
-        
-temp=y_test['CON_DEC']        
-
-for col in y_test.columns:
-    print(col)
         
