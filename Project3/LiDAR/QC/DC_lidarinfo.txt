@@ -1,0 +1,101 @@
+lasinfo (211112) report for 328 merged files
+reporting all LAS header entries:
+  file signature:             'LASF'
+  file source ID:             0
+  global_encoding:            17
+  project ID GUID data 1-4:   00000000-0000-0000-0000-000000000000
+  version major.minor:        1.4
+  system identifier:          'ALS80'
+  generating software:        'LIDAR1 tiled'
+  file creation day/year:     197/2018
+  header size:                375
+  offset to point data:       1857
+  number var. length records: 3
+  point data format:          6
+  point data record length:   30
+  number of point records:    0
+  number of points by return: 0 0 0 0 0
+  scale factor x y z:         0.01 0.01 0.01
+  offset x y z:               0 0 0
+  min x y z:                  389400.00 124200.00 -94.88
+  max x y z:                  408599.99 148199.99 760.03
+  start of waveform data packet record: 0
+  start of first extended variable length record: 0
+  number of extended_variable length records: 0
+  extended number of point records: 876185423
+  extended number of points by return: 741776816 120725815 13091399 565519 25874 0 0 0 0 0 0 0 0 0 0
+variable length header record 1 of 3:
+  reserved             0
+  user ID              'LASF_Projection'
+  record ID            2112
+  length after header  980
+  description          'OGC WKT Coordinate System'
+    WKT OGC COORDINATE SYSTEM:
+    COMPD_CS["NAD83 / Maryland + NAVD88 height - Geoid12B (metre)",PROJCS["NAD83 / Maryland",GEOGCS["NAD83",DATUM["North_American_Datum_1983",SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6269"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4269"]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["standard_parallel_1",39.45],PARAMETER["standard_parallel_2",38.3],PARAMETER["latitude_of_origin",37.66666666666666],PARAMETER["central_meridian",-77],PARAMETER["false_easting",400000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["X",EAST],AXIS["Y",NORTH],AUTHORITY["EPSG","26985"]],VERT_CS["NAVD88 height - Geoid12B (metre)",VERT_DATUM["North American Vertical Datum 1988",2005,AUTHORITY["EPSG","5103"]],HEIGHT_MODEL["US Geoid Model 2012B"],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AUTHORITY["EPSG","5703"]]]
+variable length header record 2 of 3:
+  reserved             0
+  user ID              'NIIRS10'
+  record ID            4
+  length after header  10
+  description          'NIIRS10 Timestamp'
+variable length header record 3 of 3:
+  reserved             0
+  user ID              'NIIRS10'
+  record ID            1
+  length after header  26
+  description          'NIIRS10 Tile Index'
+the header is followed by 304 user-defined bytes
+LASzip compression (version 3.4r3 c3 50000): POINT14 3
+reporting minimum and maximum for all LAS point record entries ...
+  X            38940000   40859999
+  Y            12420000   14819999
+  Z               -9488      76003
+  intensity           0      65535
+  return_number       1          5
+  number_of_returns   1          5
+  edge_of_flight_line 0          1
+  scan_direction_flag 0          1
+  classification      1         20
+  scan_angle_rank     0          0
+  user_data           0          1
+  point_source_ID     1         23
+  gps_time 207005390.751560 207015500.925673
+  extended_return_number          1      5
+  extended_number_of_returns      1      5
+  extended_classification         1     20
+  extended_scan_angle           -12     12
+  extended_scanner_channel        0      0
+number of first returns:        741776816
+number of intermediate returns: 13682585
+number of last returns:         741778265
+number of single returns:       621052243
+covered area in square units/kilounits: 196126512/196.13
+point density: all returns 4.47 last only 3.78 (per square units)
+      spacing: all returns 0.47 last only 0.51 (in units)
+overview over extended number of returns of given pulse: 621052243 215268222 37577028 2158527 129403 0 0 0 0 0 0 0 0 0 0
+histogram of classification of points:
+        24921599  unclassified (1)
+       535002697  ground (2)
+        22048056  low vegetation (3)
+        25499865  medium vegetation (4)
+       128437017  high vegetation (5)
+       121145563  building (6)
+          969854  noise (7)
+        13138388  water (9)
+         2492542  bridge deck (17)
+         2300659  Reserved for ASPRS Definition (18)
+          229183  Reserved for ASPRS Definition (20)
+ +-> flagged as extended overlap: 224177402
+  +--->         1593055 of those are unclassified (1)
+  +--->       134673982 of those are ground (2)
+  +--->         9554940 of those are low vegetation (3)
+  +--->        10016370 of those are medium vegetation (4)
+  +--->        34946021 of those are high vegetation (5)
+  +--->        30175474 of those are building (6)
+  +--->          477642 of those are noise (7)
+  +--->         2729802 of those are water (9)
+  +--->           10116 of those are Reserved for ASPRS Definition (20)
+scan angle histogram with bin size 2.000000
+  bin [-2,0) has 407226720
+  bin [0,2) has 468958703
+  average scan angle 0.001308694828591 for 876185423 element(s)
