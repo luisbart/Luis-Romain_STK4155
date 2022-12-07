@@ -103,7 +103,7 @@ print("Test set accuracy SVM with scaled data: {:.2f}".format(np.mean(score_kf_s
 
 # Random forests
 #Instantiate the model with 100 trees and entropy as splitting criteria
-Random_Forest_model = RandomForestClassifier(n_estimators=100,criterion="gini", random_state=1)
+Random_Forest_model = RandomForestClassifier(n_estimators=100,criterion="gini", random_state=5)
 score_kf_RF = np.zeros(n_splits)
 j=0
 for train_indices, test_indices in kf.split(x_scaled):
@@ -114,6 +114,7 @@ print("Test set accuracy Random Forest with scaled data: {:.2f}".format(np.mean(
 
 
 #%%
+np.random.seed(7)  
 x_train,x_test,y_train,y_test=splitter(x,y,test_size=0.3)   
 
 #Scale the data
@@ -126,21 +127,27 @@ x_scaled = scaler.transform(x)
 #Confusion matrix with Neural Network (normalized)
 dnn.fit(x_train_scaled, y_train)
 y_pred = dnn.predict(x_test_scaled)
-skplt.metrics.plot_confusion_matrix(y_test, y_pred, normalize=True)
-plt.title("MLP")
+fig = skplt.metrics.plot_confusion_matrix(y_test, y_pred, normalize=True)
+fig.plot()
+fig.set_title("MLP")
+fig.set_xticklabels(['coniferous','deciduous'])
+fig.set_yticklabels(['coniferous','deciduous'], rotation=90)
 plt.savefig("Results/Conf_matrix_NN.png",dpi=150)
 plt.show()
-y_probas = dnn.predict_proba(x_test_scaled)
-skplt.metrics.plot_roc(y_test, y_probas)
-plt.show()
-skplt.metrics.plot_cumulative_gain(y_test, y_probas)
-plt.show()
+# y_probas = dnn.predict_proba(x_test_scaled)
+# skplt.metrics.plot_roc(y_test, y_probas)
+# plt.show()
+# skplt.metrics.plot_cumulative_gain(y_test, y_probas)
+# plt.show()
 
 #Confusion matrix with Random Forest
 Random_Forest_model.fit(x_train_scaled, y_train)
 y_pred1 = Random_Forest_model.predict(x_test_scaled)
-skplt.metrics.plot_confusion_matrix(y_test, y_pred1, normalize=True)
-plt.title("RF")
+fig1 =skplt.metrics.plot_confusion_matrix(y_test, y_pred1, normalize=True)
+fig1.plot()
+fig1.set_title("RF")
+fig1.set_xticklabels(['coniferous','deciduous'])
+fig1.set_yticklabels(['coniferous','deciduous'], rotation=90)
 plt.savefig("Results/Conf_matrix_RF.png",dpi=150)
 plt.show()
 y_probas1 = Random_Forest_model.predict_proba(x_test_scaled)
@@ -154,43 +161,52 @@ plt.show()
 #Confusion matrix with SVM
 svm.fit(x_train_scaled, y_train)
 y_pred2 = svm.predict(x_test_scaled)
-skplt.metrics.plot_confusion_matrix(y_test, y_pred2, normalize=True)
-plt.title("SVM")
+fig2 = skplt.metrics.plot_confusion_matrix(y_test, y_pred2, normalize=True)
+fig2.plot()
+fig2.set_title("SVM")
+fig2.set_xticklabels(['coniferous','deciduous'])
+fig2.set_yticklabels(['coniferous','deciduous'], rotation=90)
 plt.savefig("Results/Conf_matrix_SVM.png",dpi=150)
 plt.show()
-y_probas2 = svm.predict_proba(x_test_scaled)
-skplt.metrics.plot_roc(y_test, y_probas2)
-plt.show()
-skplt.metrics.plot_cumulative_gain(y_test, y_probas2)
-plt.show()
+# y_probas2 = svm.predict_proba(x_test_scaled)
+# skplt.metrics.plot_roc(y_test, y_probas2)
+# plt.show()
+# skplt.metrics.plot_cumulative_gain(y_test, y_probas2)
+# plt.show()
 
 
 #Confusion matrix with Logistic
 logreg.fit(x_train_scaled, y_train)
 y_pred3 = logreg.predict(x_test_scaled)
-skplt.metrics.plot_confusion_matrix(y_test, y_pred3, normalize=True)
-plt.title("Logreg")
+fig3 =skplt.metrics.plot_confusion_matrix(y_test, y_pred3, normalize=True)
+fig3.plot()
+fig3.set_title("Logreg")
+fig3.set_xticklabels(['coniferous','deciduous'])
+fig3.set_yticklabels(['coniferous','deciduous'], rotation=90)
 plt.savefig("Results/Conf_matrix_Logreg.png",dpi=150)
 plt.show()
-y_probas3 = logreg.predict_proba(x_test_scaled)
-skplt.metrics.plot_roc(y_test, y_probas3)
-plt.show()
-skplt.metrics.plot_cumulative_gain(y_test, y_probas3)
-plt.show()
+# y_probas3 = logreg.predict_proba(x_test_scaled)
+# skplt.metrics.plot_roc(y_test, y_probas3)
+# plt.show()
+# skplt.metrics.plot_cumulative_gain(y_test, y_probas3)
+# plt.show()
 
 
 #Confusion matrix with Decision tree
 deep_tree_clf.fit(x_train_scaled, y_train)
 y_pred4 = deep_tree_clf.predict(x_test_scaled)
-skplt.metrics.plot_confusion_matrix(y_test, y_pred4, normalize=True)
-plt.title("DT")
+fig4 = skplt.metrics.plot_confusion_matrix(y_test, y_pred4, normalize=True)
+fig4.plot()
+fig4.set_title("DT")
+fig4.set_xticklabels(['coniferous','deciduous'])
+fig4.set_yticklabels(['coniferous','deciduous'], rotation=90)
 plt.savefig("Results/Conf_matrix_DT.png",dpi=150)
 plt.show()
-y_probas3 = logreg.predict_proba(x_test_scaled)
-skplt.metrics.plot_roc(y_test, y_probas3)
-plt.show()
-skplt.metrics.plot_cumulative_gain(y_test, y_probas3)
-plt.show()
+# y_probas3 = logreg.predict_proba(x_test_scaled)
+# skplt.metrics.plot_roc(y_test, y_probas3)
+# plt.show()
+# skplt.metrics.plot_cumulative_gain(y_test, y_probas3)
+# plt.show()
 
 
 
@@ -232,6 +248,24 @@ ax.set_title("Feature importances")
 ax.set_ylabel("Importance in %")
 fig.tight_layout()
 plt.savefig("Results/Feature_imporcance_RF.png",dpi=150)
+
+
+#%% TEST lazypredict
+
+from lazypredict.Supervised import LazyClassifier
+
+
+clf = LazyClassifier(custom_metric=None) 
+models,predictions = clf.fit(x_train_scaled, x_test_scaled, y_train, y_test)
+
+print(models)
+
+
+
+
+
+
+
 
 
 
