@@ -1,53 +1,53 @@
 10-fold cross validation average model accuracy:
 
-Test set accuracy Neural Network with scaled data: 0.72
-Test set accuracy Logistic Regression with scaled data: 0.72
-Test set accuracy Decision Trees with scaled data: 0.63
-Test set accuracy SVM with scaled data: 0.69
-Test set accuracy Random Forest with scaled data: 0.71
+Test set accuracy Neural Network with scaled data: 0.73
+Test set accuracy Logistic Regression with scaled data: 0.74
+Test set accuracy Decision Trees with scaled data: 0.64
+Test set accuracy SVM with scaled data: 0.68
+Test set accuracy Random Forest with scaled data: 0.74
 
 
-Precision, recall, F1 score for NN (coniferous, deciduous): (array([0.78125   , 0.73224044]), array([0.56053812, 0.88448845]), array([0.65274151, 0.80119581]), array([223, 303], dtype=int64))
-Precision, recall, F1 score for RF (coniferous, deciduous): (array([0.72916667, 0.75149701]), array([0.62780269, 0.82838284]), array([0.6746988 , 0.78806907]), array([223, 303], dtype=int64))
-Precision, recall, F1 score for SVM (coniferous, deciduous): (array([0.67015707, 0.71641791]), array([0.57399103, 0.79207921]), array([0.61835749, 0.7523511 ]), array([223, 303], dtype=int64))
-Precision, recall, F1 score for logreg (coniferous, deciduous): (array([0.83892617, 0.74005305]), array([0.56053812, 0.92079208]), array([0.67204301, 0.82058824]), array([223, 303], dtype=int64))
-Precision, recall, F1 score for decision tree (coniferous, deciduous): (array([0.60287081, 0.69400631]), array([0.56502242, 0.72607261]), array([0.58333333, 0.70967742]), array([223, 303], dtype=int64))
+Precision, recall, F1 score for NN (coniferous, deciduous): (array([0.78676471, 0.75722543]), array([0.56020942, 0.90034364]), array([0.65443425, 0.82260597]), array([191, 291], dtype=int64))
+Precision, recall, F1 score for RF (coniferous, deciduous): (array([0.76510067, 0.76876877]), array([0.59685864, 0.87972509]), array([0.67058824, 0.82051282]), array([191, 291], dtype=int64))
+Precision, recall, F1 score for SVM (coniferous, deciduous): (array([0.65868263, 0.74285714]), array([0.57591623, 0.80412371]), array([0.61452514, 0.77227723]), array([191, 291], dtype=int64))
+Precision, recall, F1 score for logreg (coniferous, deciduous): (array([0.7751938 , 0.74220963]), array([0.52356021, 0.90034364]), array([0.625    , 0.8136646]), array([191, 291], dtype=int64))
+Precision, recall, F1 score for decision tree (coniferous, deciduous): (array([0.56585366, 0.72924188]), array([0.60732984, 0.69415808]), array([0.58585859, 0.71126761]), array([191, 291], dtype=int64))
 
 Number of features
 CON, DEC
-212, 314
+191, 291
 
 Precision
 	Coniferous trees	Deciduous trees
-MLP	0.78125	0.73224044
-RF	0.72916667	0.75149701
-SVM	0.67015707	0.71641791
-Logreg	0.83892617	0.74005305
-DT	0.60287081	0.69400631
+MLP	0.78676471	0.75722543
+RF	0.76510067	0.76876877
+SVM	0.65868263	0.74285714
+Logreg	0.7751938	0.74220963
+DT	0.56585366	0.72924188
 
 Recall
-NN	0.56053812	0.88448845
-RF	0.62780269	0.82838284
-SVM	0.57399103	0.79207921
-Logreg	0.56053812	0.92079208
-DT	0.56502242	0.72607261
+NN	0.56020942	0.90034364
+RF	0.59685864	0.87972509
+SVM	0.57591623	0.80412371
+Logreg	0.52356021	0.90034364
+DT	0.60732984	0.69415808
 
 F1
-NN	0.65274151	0.80119581
-RF	0.6746988	0.78806907
-SVM	0.61835749	0.7523511
-Logreg	0.67204301	0.82058824
-DT	0.58333333	0.70967742
+NN	0.65443425	0.82260597
+RF	0.67058824	0.82051282
+SVM	0.61452514	0.77227723
+Logreg	0.625	0.8136646
+DT	0.58585859	0.71126761
 
 
 
 Overall accuracy (CON,DEC,Total)
-MLP	0.57	0.88	0.76
-RF	0.60	0.8	0.72
-SVM	0.55	0.77	0.68
-Logreg	0.55	0.84	0.72
-DT	0.58	0.82	0.72
+MLP	0.56	0.90	0.77
+RF	0.60	0.88	0.77
+SVM	0.58	0.80	0.71
+Logreg	0.52	0.90	0.75
+DT	0.61	0.69	0.66
 			
 			
-Number of features	212	314	526
+Number of features	191	291	482
 

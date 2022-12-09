@@ -37,7 +37,7 @@ print(cwd)
 #%%
 np.random.seed(3)        #create same seed for random number every time
 
-trees=pd.read_csv("input_data\input_trees_v02.csv")     #Load tree data
+trees=pd.read_csv("input_data\input_trees_v05.csv")     #Load tree data
 
 trees.columns
 
@@ -120,19 +120,7 @@ plt.show()
 skplt.metrics.plot_cumulative_gain(y_test, y_probas3)
 plt.show()
 
-#%%
-from sklearn.tree import plot_tree
 
-
-
-
-plt.figure(figsize=(150, 100))
-plot_tree(Random_Forest_model.estimators_[0], 
-          feature_names=['min', 'max', 'avg', 'std', 'ske', 'kur', 'p05', 'p25','p50', 'p75', 'p90', 'c00', 'int_min', 'int_max', 'int_avg', 'int_std','int_ske', 'int_kur', 'int_p05', 'int_p25', 'int_p50', 'int_p75','int_p90'],
-          class_names=['Conifers', 'Deciduous'], 
-          filled=True, impurity=True, 
-          rounded=True)
-#plt.savefig(f"Results/RF_diagram.png", dpi=150)
 
 
 

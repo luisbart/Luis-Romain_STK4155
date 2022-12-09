@@ -38,13 +38,13 @@ print(cwd)
 #%%
 np.random.seed(3)        #create same seed for random number every time
 
-trees=pd.read_csv("input_data\input_trees_v02.csv")     #Load tree data
+trees=pd.read_csv("input_data\input_trees_v04.csv")     #Load tree data
 
 trees.columns
 
 x=trees[['min', 'max', 'avg', 'std', 'ske', 'kur', 'p05', 'p25','p50', 'p75', 'p90', 'c00', 'int_min', 'int_max', 'int_avg', 'int_std','int_ske', 'int_kur', 'int_p05', 'int_p25', 'int_p50', 'int_p75','int_p90']]
 y=trees['CON_DEC']
-y2=trees['Specie']
+#y2=trees['Specie']
 
 #x_train,x_test,y_train,y_test=splitter(x,y,test_size=0.3)   #Split datasets into training and testing: not needed when we use CV
 
@@ -72,7 +72,7 @@ for train_indices, test_indices in kf.split(x_scaled):
 print("Test set accuracy Neural Network with scaled data: {:.2f}".format(np.mean(score_kf_NN)))
 
 # Logistic Regression
-logreg = LogisticRegression(solver='lbfgs', random_state=1)
+logreg = LogisticRegression(solver='lbfgs', max_iter=10000,random_state=1)
 score_kf_logreg = np.zeros(n_splits)
 j=0
 for train_indices, test_indices in kf.split(x_scaled):
