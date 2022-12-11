@@ -98,7 +98,7 @@ plt.xlabel('Model complexity: number of neurons in one layer')
 plt.xticks(np.arange(0, n_hidden_neurons+1, step=5))  # Set label locations.
 plt.title("Variance-Bias tradeoff for MLP")
 plt.legend()
-plt.savefig("Results/bias_variance_tradeoff/MLP_bias_var_tradeoff.png",dpi=150)
+#plt.savefig("Results/bias_variance_tradeoff/MLP_bias_var_tradeoff.png",dpi=150)
 plt.show()
 
 #Check that bias+variance=error

@@ -17,6 +17,7 @@ from sklearn.preprocessing import StandardScaler
 import pickle
 import os 
 from sklearn.neural_network import MLPClassifier
+from sklearn.utils import resample
 
 #%%
 import os
@@ -27,7 +28,7 @@ print(cwd)
 #%%
 np.random.seed(3)        #create same seed for random number every time
 
-trees=pd.read_csv("input_data\input_trees_v02.csv")     #Load tree data
+trees=pd.read_csv("input_data\input_trees_v04.csv")     #Load tree data
 
 trees.columns
 
@@ -43,17 +44,89 @@ scaler.fit(x_train)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
 
+
 M = 100   #size of each minibatch
 m = int(y_train.shape[0]/M) #number of minibatches
 epochs = 100000 #number of epochs 
 
+
+#%% Test which number of hidden neurons works best
+
+#Number of bootstraps
+n_bootstraps = 50
+
+y_test = np.array(y_test).reshape(y_test.shape[0],1)
+
+
+eta_val = 1e-6
+lmbd_val = 1e-2
+n_hidden_neurons = 20
+epochs = 1000 #number of epochs 
+
+error = np.zeros(n_hidden_neurons)
+
+for n in range(n_hidden_neurons):
+    y_pred = np.empty((y_test.shape[0],n_bootstraps))
+    for i in range(n_bootstraps):
+        x_, y_ = resample(x_train,y_train)
+ 
+
+        dnn = MLPClassifier(hidden_layer_sizes=n+1, activation='relu', solver ='lbfgs',alpha=lmbd_val, learning_rate_init=eta_val, max_iter=epochs)
+        dnn.fit(x_, y_)
+        print("Test set accuracy Neural Network: {:.2f}".format(dnn.score(x_test,y_test)))
+        y_pred[:, i] = dnn.predict(x_test)
+    
+    error[n] = np.mean( np.mean((y_test - y_pred)**2, axis=1, keepdims=True) )
+
+plt.plot(range(1,n_hidden_neurons+1), error)
+plt.ylabel('MSE')
+plt.xlabel('Model complexity: number of neurons in one layer')
+plt.xticks(np.arange(0, n_hidden_neurons+1, step=5))  # Set label locations.
+plt.legend()
+plt.savefig("Results/MLP_n_neurons.png",dpi=150)
+plt.show()
+
+#%% Test which number of hidden layers works best
+
+n_bootstraps = 50
+
+y_test = np.array(y_test).reshape(y_test.shape[0],1)
+
+
+eta_val = 1e-6
+lmbd_val = 1e-2
+n_hidden_neurons=[[1],[1,1],[1,1,1],[1,1,1,1],[1,1,1,1,1]]
+epochs = 1000 #number of epochs 
+
+error = np.zeros(len(n_hidden_neurons))
+
+for n in range(len(n_hidden_neurons)):
+    y_pred = np.empty((y_test.shape[0],n_bootstraps))
+    for i in range(n_bootstraps):
+        x_, y_ = resample(x_train,y_train)
+             
+        dnn = MLPClassifier(hidden_layer_sizes=n_hidden_neurons[n], activation='relu', solver ='lbfgs',alpha=lmbd_val, learning_rate_init=eta_val, max_iter=epochs)
+        dnn.fit(x_, y_)
+        print("Test set accuracy Neural Network: {:.2f}".format(dnn.score(x_test,y_test)))
+        y_pred[:,i] = dnn.predict(x_test)
+    
+    error[n] = np.mean((y_test - y_pred)**2)
+
+
+plt.plot(range(1,len(n_hidden_neurons)+1), error)
+plt.ylabel('MSE')
+plt.xlabel('Model complexity: number of layers')
+plt.xticks(np.arange(1, len(n_hidden_neurons)+1, step=1))  # Set label locations.
+plt.legend()
+plt.savefig("Results/MLP_n_layers.png",dpi=150)
+plt.show()
 
 #%%
 # Classify conifer/deciduos  
 
 eta_vals = np.logspace(-8, -5, 4)
 lmbd_vals = np.logspace(-3, 1, 5)
-n_hidden_neurons = 20
+n_hidden_neurons = 1
 epochs = 1000 #number of epochs 
 
 DNN_scikit = np.zeros((len(eta_vals), len(lmbd_vals)), dtype=object)
@@ -98,7 +171,16 @@ ax.set_xlabel("$\lambda$")
 plt.savefig(f"Results/NN_TestAccuracy_relu_CON_DEC_.png", dpi=150)
 plt.show()
 
-        
+    
+fig, ax = plt.subplots(figsize = (10, 10))
+sns.heatmap(train_accuracy, annot=True, ax=ax, cmap="viridis", xticklabels=lmbd_vals, yticklabels=eta_vals)
+ax.set_title("Train Accuracy")
+ax.set_ylabel("$\eta$")
+ax.set_xlabel("$\lambda$")
+plt.savefig(f"Results/NN_TrainAccuracy_relu_CON_DEC_.png", dpi=150)
+plt.show()
+
+
 #%%
 #Choose the right eta and lambda
 eta_val = np.logspace(-5, -5, 1)
@@ -134,18 +216,7 @@ plt.title('Confusion Matrix', fontsize=18)
 plt.savefig(f"Results/NN_Conf_Matrix_relu_CON_DEC_.png", dpi=150)
 plt.show()        
         
-TP=conf_matrix[1,1]
-TN=conf_matrix[0,0]
-FP=conf_matrix[0,1]
-FN=conf_matrix[1,0]
-
-Accuracy=(TP+TN)/(TP+TN+FP+FN)
-Recall=TP/(TP+FN)
-Precision=TP*(TP+FP)
-F1_score=2*((Precision*Recall)/(Precision+Recall))    
-
-print("Accuracy:",Accuracy)        
-print("F1_score", F1_score)        
+      
         
         
         

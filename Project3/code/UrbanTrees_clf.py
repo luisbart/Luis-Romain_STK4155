@@ -61,8 +61,8 @@ kf = KFold(n_splits)
 
 #define methods
 
-# Neural Network with 4 hidden layers, eta=1.e-5, lmbd=10
-dnn = MLPClassifier(hidden_layer_sizes=4, activation='relu', solver ='lbfgs',alpha=10, learning_rate_init=1.e-5, max_iter=1000, random_state=1)
+# Neural Network with 1 hidden layers, eta=1.e-7, lmbd=10
+dnn = MLPClassifier(hidden_layer_sizes=1, activation='relu', solver ='lbfgs',alpha=10, learning_rate_init=1.e-7, max_iter=100000, random_state=1)
 score_kf_NN = np.zeros(n_splits)
 j=0
 for train_indices, test_indices in kf.split(x_scaled):
@@ -82,7 +82,7 @@ for train_indices, test_indices in kf.split(x_scaled):
 print("Test set accuracy Logistic Regression with scaled data: {:.2f}".format(np.mean(score_kf_logreg)))
 
 # Decision Trees
-deep_tree_clf = DecisionTreeClassifier(max_depth=None, random_state=1)
+deep_tree_clf = DecisionTreeClassifier(max_depth=None, criterion="entropy", random_state=1)
 score_kf_deep_tree_clf = np.zeros(n_splits)
 j=0
 for train_indices, test_indices in kf.split(x_scaled):
@@ -92,7 +92,7 @@ for train_indices, test_indices in kf.split(x_scaled):
 print("Test set accuracy Decision Trees with scaled data: {:.2f}".format(np.mean(score_kf_deep_tree_clf)))
  
 # Support Vector Machine
-svm = SVC(gamma='auto', C=100, random_state=1)
+svm = SVC(gamma='auto', C=1, random_state=1)
 score_kf_svm = np.zeros(n_splits)
 j=0
 for train_indices, test_indices in kf.split(x_scaled):

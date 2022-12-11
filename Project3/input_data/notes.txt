@@ -35,7 +35,11 @@ Thuja			7
 input_trees_v02: reduce the number of deciduous to ca. 1000, randomly
 input_trees_v03: reduce the number per sp to ca. 500 (for deciduous)
 
-Add cross validation to NN! Con_dec works ok. species not good
+
+
+LAS is a file format for the interchange of 3-dimensional point cloud data. Although developed primarily for exchange of lidar point cloud data, this format supports the exchange of any 3-dimensional x,y,z tuplet data. Lidar stands for LIght Detection And Ranging by analogy with radar, RAdio Detection and Ranging. Lidar uses ultraviolet, visible, or near infrared light to image objects and instruments fitted to aircraft and satellites use lidar for surveying and mapping. See Notes below for more on lidar and point clouds. The LAS specification was developed and is maintained as a public specification by the American Society for Photogrammetry and Remote Sensing (ASPRS). USGS has established the 3D Elevation Program (3DEP), which will generate lidar data for the entire continental United States and Hawaii, using the LAS 1.4 format to deliver raw point cloud data. The data is used to derive images and 3D surface models.
+
+The introduction to the LAS format from ASPRS explains the rational for developing the format: "This binary file format is an alternative to proprietary systems or a generic ASCII file interchange system used by many companies. The problem with proprietary systems is obvious in that data cannot be easily taken from one system to another. There are two major problems with the ASCII file interchange. The first problem is performance because the reading and interpretation of ASCII elevation data can be very slow and the file size can be extremely large, even for small amounts of data. The second problem is that all information specific to the lidar data is lost. The LAS file format is a binary file format that maintains information specific to the lidar nature of the data while not being overly complex." Numbers in LAS are stored in binary form to save space and to eliminate the processing time needed to convert numbers in ASCII to a form usable for calculation. See Notes below for more details on number formats used in LAS.
 
 
 	
