@@ -69,7 +69,7 @@ for train_indices, test_indices in kf.split(x_scaled):
     dnn.fit(x_scaled[train_indices], y[train_indices])
     score_kf_NN[j]=dnn.score(x_scaled[test_indices], y[test_indices])
     j+=1
-print("Test set accuracy Neural Network with scaled data: {:.2f}".format(np.mean(score_kf_NN)))
+print("Test set accuracy Neural Network with scaled data: {:.4f}".format(np.mean(score_kf_NN)))
 
 # Logistic Regression
 logreg = LogisticRegression(solver='lbfgs', max_iter=10000,random_state=1)
@@ -79,7 +79,7 @@ for train_indices, test_indices in kf.split(x_scaled):
     logreg.fit(x_scaled[train_indices], y[train_indices])
     score_kf_logreg[j]=logreg.score(x_scaled[test_indices], y[test_indices])
     j+=1
-print("Test set accuracy Logistic Regression with scaled data: {:.2f}".format(np.mean(score_kf_logreg)))
+print("Test set accuracy Logistic Regression with scaled data: {:.4f}".format(np.mean(score_kf_logreg)))
 
 # Decision Trees
 deep_tree_clf = DecisionTreeClassifier(max_depth=None, criterion="entropy", random_state=1)
@@ -89,7 +89,7 @@ for train_indices, test_indices in kf.split(x_scaled):
     deep_tree_clf.fit(x_scaled[train_indices], y[train_indices])
     score_kf_deep_tree_clf[j]=deep_tree_clf.score(x_scaled[test_indices], y[test_indices])
     j+=1
-print("Test set accuracy Decision Trees with scaled data: {:.2f}".format(np.mean(score_kf_deep_tree_clf)))
+print("Test set accuracy Decision Trees with scaled data: {:.4f}".format(np.mean(score_kf_deep_tree_clf)))
  
 # Support Vector Machine
 svm = SVC(gamma='auto', C=1, random_state=1)
@@ -99,7 +99,7 @@ for train_indices, test_indices in kf.split(x_scaled):
     svm.fit(x_scaled[train_indices], y[train_indices])
     score_kf_svm[j]=svm.score(x_scaled[test_indices], y[test_indices])
     j+=1
-print("Test set accuracy SVM with scaled data: {:.2f}".format(np.mean(score_kf_svm)))
+print("Test set accuracy SVM with scaled data: {:.4f}".format(np.mean(score_kf_svm)))
 
 # Random forests
 #Instantiate the model with 100 trees and entropy as splitting criteria
@@ -110,7 +110,7 @@ for train_indices, test_indices in kf.split(x_scaled):
     Random_Forest_model.fit(x_scaled[train_indices], y[train_indices])
     score_kf_RF[j]=Random_Forest_model.score(x_scaled[test_indices], y[test_indices])
     j+=1
-print("Test set accuracy Random Forest with scaled data: {:.2f}".format(np.mean(score_kf_RF)))
+print("Test set accuracy Random Forest with scaled data: {:.4f}".format(np.mean(score_kf_RF)))
 
 
 #%%
@@ -143,7 +143,7 @@ plt.show()
 #Confusion matrix with Random Forest
 Random_Forest_model.fit(x_train_scaled, y_train)
 y_pred1 = Random_Forest_model.predict(x_test_scaled)
-fig1 =skplt.metrics.plot_confusion_matrix(y_test, y_pred1, normalize=True)
+fig1 =skplt.metrics.plot_confusion_matrix(y_test, y_pred1, normalize=False)
 fig1.plot()
 fig1.set_title("RF")
 fig1.set_xticklabels(['coniferous','deciduous'])
@@ -236,16 +236,21 @@ plt.savefig(f"Results/RF_diagram.png", dpi=150)
 
 
 #%% Feature importance in RF
-features=['min', 'max', 'avg', 'std', 'ske', 'kur', 'p05', 'p25','p50', 'p75', 'p90', 'c00', 'int_min', 'int_max', 'int_avg', 'int_std','int_ske', 'int_kur', 'int_p05', 'int_p25', 'int_p50', 'int_p75','int_p90']
+features=['Minimum Z', 'Maximum Z', 'Mean Z', 'Standard deviation of Z', 'Skewness of Z', 'Kurtosis of Z', 
+          '5th percetile of Z', '25th percentile of Z','50th percentile of Z', '75th percentile of Z', 
+          '90th percentile of Z', 'Number of points', 'Minimum intensity', 'Maximum intensity', 'Mean intensity', 
+          'Standard deviation of intensity', 'Skewness of intensity', 'Kurtosis of intensity', 
+          '5th percetile of intensity', '25th percentile of intensity','50th percentile of intensity', 
+          '75th percentile of intensity', '90th percentile of intensity']
 
 importances = Random_Forest_model.feature_importances_
 std = np.std(importances)
 forest_importances = pd.Series(importances, index=features)
 
 fig, ax = plt.subplots()
-forest_importances.plot.bar(yerr=std, ax=ax)
+forest_importances.plot.barh(ax=ax) #xerr=std, 
 ax.set_title("Feature importances")
-ax.set_ylabel("Importance in %")
+ax.set_xlabel("Feature importance score")
 fig.tight_layout()
 plt.savefig("Results/Feature_imporcance_RF.png",dpi=150)
 

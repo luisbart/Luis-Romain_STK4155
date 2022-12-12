@@ -1,10 +1,10 @@
 10-fold cross validation average model accuracy:
 
-Test set accuracy Neural Network with scaled data: 0.74
-Test set accuracy Logistic Regression with scaled data: 0.74
-Test set accuracy Decision Trees with scaled data: 0.66
-Test set accuracy SVM with scaled data: 0.73
-Test set accuracy Random Forest with scaled data: 0.74
+Test set accuracy Neural Network with scaled data: 0.7426
+Test set accuracy Logistic Regression with scaled data: 0.7357
+Test set accuracy Decision Trees with scaled data: 0.6578
+Test set accuracy SVM with scaled data: 0.7313
+Test set accuracy Random Forest with scaled data: 0.7438
 
 
 Precision, recall, F1 score for NN (coniferous, deciduous): (array([0.7890625 , 0.74576271]), array([0.52879581, 0.90721649]), array([0.63322884, 0.81860465]), array([191, 291], dtype=int64))
