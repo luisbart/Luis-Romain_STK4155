@@ -1,4 +1,3 @@
-
 : a batch script for making delta-z
 
 : set output folders
@@ -14,8 +13,6 @@
 
 	:set number of cores
 	set CORES=16
-
-
 
 
 lasheight -i %LAZ_INPUT%\*.laz -odir %LAZ_OUTPUT% -olaz -replace_z -buffered 50 -cores %CORES%

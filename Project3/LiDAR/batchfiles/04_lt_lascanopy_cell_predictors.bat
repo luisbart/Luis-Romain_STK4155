@@ -1,4 +1,4 @@
-
+: a batch script for extracting predictors from the point cloud
 
 : set output folders
 

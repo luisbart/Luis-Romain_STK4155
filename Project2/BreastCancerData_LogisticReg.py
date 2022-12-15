@@ -12,7 +12,6 @@ from sklearn.model_selection import train_test_split as splitter
 from sklearn.metrics import accuracy_score
 from sklearn.datasets import load_breast_cancer
 #from Functions import Beta_std, R2, MSE, DesignMatrix, LinReg
-from LogisticReg import NeuralNetwork, sigmoid,  accuracy_score_numpy
 from sklearn.neural_network import MLPClassifier
 from sklearn.linear_model import LogisticRegression
 

@@ -1,4 +1,4 @@
-
+: batchfile for compressing the LiDAR data (LAS to LAZ), index the files and extract info
 
 : set output folders
 
@@ -13,8 +13,8 @@ cls
 	set INFO=S:\temp\LB\DC\Lidar\QC
 
 
-:laszip -i %INPUT%\*.las -odir %OUTPUT% -olaz
-:lasindex -i %OUTPUT%\*.laz
+laszip -i %INPUT%\*.las -odir %OUTPUT% -olaz
+lasindex -i %OUTPUT%\*.laz
 
 lasinfo -i %OUTPUT%\*.laz -merged -compute_density -histo scan_angle 2 -o %INFO%\DC_lidarinfo.txt
 
