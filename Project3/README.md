@@ -18,7 +18,8 @@ Bias_Var_OLS.py	Bias-Variance tradeoff for OLS
 Bias_Var_RF.py		Bias-Variance tradeoff for RF
 Bias_Var_Ridge.py	Bias-Variance tradeoff for Ridge
 
-## References: Some pdf with references used in the report
+## References: 
+Some pdf with references used in the report
 
 ## input_data: 
 
